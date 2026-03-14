@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Manager Pro | אלכסיי זבודיסקר</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#facc15">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <img src="logo.png" alt="Chef Manager Pro" class="main-logo">
+            </div>
+            <div class="global-actions">
+                <button id="installBtn" class="btn-outline hidden">📲 התקן</button>
+                <button onclick="toggleShoppingList()" class="btn-outline">🛒 קניות</button>
+                <button onclick="exportData()" class="btn-outline">📥 גיבוי</button>
+                <label class="btn-outline">📤 שחזור
+                    <input type="file" id="importFile" style="display:none" onchange="importData(event)">
+                </label>
+            </div>
+        </header>
+
+        <div class="toolbar">
+            <input type="text" id="searchInput" placeholder="חפש מתכון או מצרך..." oninput="handleSearch()">
+            <select id="categoryFilter" onchange="handleSearch()">
+                <option value="all">כל הקטגוריות</option>
+            </select>
+        </div>
+
+        <div id="recipeGrid" class="grid"></div>
+        
+        <div id="editModal" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="modalTitle">מתכון חדש</h2>
+                <div class="form-group" style="display:flex; gap:10px; margin-bottom:10px;">
+                    <input type="text" id="editTitle" placeholder="שם המתכון">
+                    <input type="text" id="editCat" placeholder="קטגוריה">
+                </div>
+                <div class="form-group" style="display:flex; gap:10px; margin-bottom:10px;">
+                    <input type="text" id="editTime" placeholder="זמן">
+                    <input type="number" id="editServings" placeholder="מנות">
+                </div>
+                <input type="text" id="editImg" placeholder="קישור לתמונה" style="margin-bottom:10px">
+                <textarea id="editIngredients" placeholder="מצרכים (למשל: 2 כפות שמן)"></textarea>
+                <textarea id="editSteps" placeholder="הוראות..."></textarea>
+                <div class="modal-actions">
+                    <button onclick="saveRecipe()" class="btn-primary">שמור</button>
+                    <button onclick="closeModal()" class="btn-text">ביטול</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="recipeView" class="modal hidden">
+            <div class="modal-content view-area">
+                <button onclick="closeModal()" class="close-view">✕</button>
+                <div id="viewAreaContent"></div>
+            </div>
+        </div>
+
+        <div id="shoppingListModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>🛒 רשימת קניות</h2>
+                <ul id="shoppingListItems"></ul>
+                <div class="modal-actions">
+                    <button onclick="clearShoppingList()" class="delete-btn">נקה</button>
+                    <button onclick="closeModal()" class="btn-primary">סגור</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 כל הזכויות שמורות - אלכסיי זבודיסקר</p>
+        </footer>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
