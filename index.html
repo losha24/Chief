@@ -6,6 +6,7 @@
     <title>ChefPro v1.0.7</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -52,14 +53,14 @@
                 <input type="hidden" id="editId">
                 <input type="text" id="editTitle" placeholder="שם המתכון">
                 <select id="editCat">
-                    <option value="בשרי">בשרי</option>
-                    <option value="חלבי">חלבי</option>
-                    <option value="מאפים">מאפים</option>
-                    <option value="קינוחים">קינוחים</option>
-                    <option value="סלטים">סלטים</option>
-                    <option value="פסטות">פסטות</option>
+                    <option value="בשרי">בשרי 🥩</option>
+                    <option value="חלבי">חלבי 🧀</option>
+                    <option value="מאפים">מאפים 🥐</option>
+                    <option value="קינוחים">קינוחים 🍰</option>
+                    <option value="סלטים">סלטים 🥗</option>
+                    <option value="פסטות">פסטות 🍝</option>
                 </select>
-                <textarea id="editIng" placeholder="מצרכים (שורה לכל מצרך)"></textarea>
+                <textarea id="editIng" placeholder="מצרכים (כל מצרך בשורה חדשה)"></textarea>
                 <textarea id="editSteps" placeholder="הוראות הכנה"></textarea>
                 <button onclick="saveRecipe()" class="btn-save">שמור מתכון</button>
             </div>
@@ -76,7 +77,7 @@
             <div class="modal-content">
                 <h3>🛒 רשימת קניות</h3>
                 <ul id="shoppingItems"></ul>
-                <button onclick="clearShoppingList()" class="btn-save" style="background:red">נקה הכל</button>
+                <button onclick="clearShoppingList()" class="btn-save" style="background:#ff4d4d; margin-bottom:10px;">נקה הכל</button>
                 <button onclick="closeModal()" class="btn-save">סגור</button>
             </div>
         </div>
