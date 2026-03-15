@@ -1,20 +1,20 @@
-/** ChefPro v1.0.7 | Alexey Zavodisker **/
+/** ChefPro v1.0.8 | Alexey Zavodisker **/
 
 const initialData = [
-    { id: "1", title: "שניצל קריספי", category: "בשרי", ingredients: ["חזה עוף פרוס", "ביצים", "פירורי לחם", "מלח ופלפל"], instructions: ["טובלים בביצה", "מצפים בפירורי לחם", "מטגנים עד להזהבה"] },
-    { id: "2", title: "פסטה ברוטב עגבניות", category: "פסטות", ingredients: ["חבילת פסטה", "רסק עגבניות", "שום", "שמן זית"], instructions: ["מבשלים פסטה", "מטגנים שום", "מוסיפים רסק ותבלינים ומערבבים"] }
+    { id: "1", title: "שניצל קריספי", category: "בשרי", ingredients: ["חזה עוף פרוס", "ביצים", "פירורי לחם"], instructions: ["טובלים בביצה", "מצפים ומטגנים"] },
+    { id: "2", title: "פסטה ברוטב עגבניות", category: "פסטות", ingredients: ["פסטה", "רסק עגבניות", "שום"], instructions: ["מבשלים פסטה ומערבבים עם הרוטב"] }
 ];
 
-// טעינת נתונים - שימוש במפתח ייחודי למניעת התנגשויות
-let recipes = JSON.parse(localStorage.getItem('chef_v107_data')) || initialData;
-let shoppingList = JSON.parse(localStorage.getItem('chef_v107_shop')) || [];
+let recipes = JSON.parse(localStorage.getItem('chef_v108_final')) || initialData;
+let shoppingList = JSON.parse(localStorage.getItem('shop_v108_final')) || [];
 let deferredPrompt;
 
-// לוגיקת התקנה PWA
+// PWA Install Logic
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    document.getElementById('installBtn').style.display = 'inline-block';
+    const btn = document.getElementById('installBtn');
+    if(btn) btn.style.display = 'inline-block';
 });
 
 async function installPWA() {
@@ -23,7 +23,7 @@ async function installPWA() {
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === 'accepted') {
         const btn = document.getElementById('installBtn');
-        btn.style.backgroundColor = 'red'; // הופך לאדום כפי שביקשת
+        btn.style.backgroundColor = '#ff4d4d'; 
         btn.style.color = 'white';
         btn.innerText = '✅ מותקן';
     }
@@ -37,74 +37,59 @@ function renderGrid(data = recipes) {
         <div class="card">
             <div onclick="viewRecipe('${r.id}')">
                 <div class="card-icon">${getIcon(r.category)}</div>
-                <h3>${r.title}</h3>
-                <small>${r.category}</small>
+                <h3 class="card-title">${r.title}</h3>
+                <span class="card-tag">${r.category}</span>
             </div>
             <div class="card-btns">
                 <button onclick="openModal('${r.id}')">✏️</button>
-                <button onclick="deleteRecipe('${r.id}')" style="color:red">🗑️</button>
+                <button onclick="deleteRecipe('${r.id}')" style="color:#ff6b6b">🗑️</button>
             </div>
         </div>
     `).join('');
 }
 
 function getIcon(cat) {
-    if (cat.includes("בשרי")) return "🥩";
-    if (cat.includes("חלבי")) return "🧀";
-    if (cat.includes("מאפים")) return "🥐";
-    if (cat.includes("קינוחים")) return "🍰";
-    if (cat.includes("סלטים")) return "🥗";
-    if (cat.includes("פסטות")) return "🍝";
-    return "🍽️";
+    const icons = { "בשרי": "🥩", "חלבי": "🧀", "מאפים": "🥐", "קינוחים": "🍰", "סלטים": "🥗", "פסטות": "🍝" };
+    return icons[cat] || "🍽️";
 }
 
 function saveRecipe() {
     const id = document.getElementById('editId').value;
     const title = document.getElementById('editTitle').value.trim();
-    const cat = document.getElementById('editCat').value;
-    
     if (!title) return alert("נא להזין שם למתכון");
 
-    const newR = {
+    const r = {
         id: id || Date.now().toString(),
         title: title,
-        category: cat,
+        category: document.getElementById('editCat').value,
         ingredients: document.getElementById('editIng').value.split('\n').filter(l => l.trim()),
         instructions: document.getElementById('editSteps').value.split('\n').filter(l => l.trim())
     };
 
-    if (id) {
-        const idx = recipes.findIndex(x => x.id == id);
-        recipes[idx] = newR;
-    } else {
-        recipes.push(newR);
-    }
+    if (id) recipes[recipes.findIndex(x => x.id == id)] = r;
+    else recipes.push(r);
 
-    localStorage.setItem('chef_v107_data', JSON.stringify(recipes));
+    localStorage.setItem('chef_v108_final', JSON.stringify(recipes));
     closeModal();
     renderGrid();
-}
-
-function deleteRecipe(id) {
-    if (confirm('למחוק את המתכון?')) {
-        recipes = recipes.filter(r => r.id != id);
-        localStorage.setItem('chef_v107_data', JSON.stringify(recipes));
-        renderGrid();
-    }
 }
 
 function viewRecipe(id) {
     const r = recipes.find(x => x.id == id);
     const content = document.getElementById('viewAreaContent');
     content.innerHTML = `
-        <div class="view-header">
-            <h1>${getIcon(r.category)} ${r.title}</h1>
-            <button onclick="shareWA('${r.id}')" class="btn-wa">שיתוף WhatsApp 💬</button>
+        <div class="view-card">
+            <h1 class="view-title">${getIcon(r.category)} ${r.title}</h1>
+            <div class="view-section">
+                <h3>📋 מצרכים</h3>
+                <ul>${r.ingredients.map(i => `<li>${i} <button onclick="addToShop('${i}')" class="mini-add-btn">🛒</button></li>`).join('')}</ul>
+            </div>
+            <div class="view-section">
+                <h3>👨‍🍳 הוראות הכנה</h3>
+                <p>${r.instructions.join('<br>')}</p>
+            </div>
+            <button onclick="shareWA('${r.id}')" class="btn-wa">שתף ב-WhatsApp 💬</button>
         </div>
-        <h3>מצרכים:</h3>
-        <ul>${r.ingredients.map(i => `<li>${i} <button onclick="addToShop('${i}')">🛒</button></li>`).join('')}</ul>
-        <h3>הוראות הכנה:</h3>
-        <p>${r.instructions.join('<br>')}</p>
     `;
     document.getElementById('recipeView').classList.remove('hidden');
 }
@@ -118,10 +103,16 @@ function shareWA(id) {
 function filterRecipes() {
     const s = document.getElementById('searchInput').value.toLowerCase();
     const c = document.getElementById('categoryFilter').value;
-    const filtered = recipes.filter(r => 
-        r.title.toLowerCase().includes(s) && (c === 'הכל' || r.category.includes(c))
-    );
+    const filtered = recipes.filter(r => r.title.toLowerCase().includes(s) && (c === 'הכל' || r.category === c));
     renderGrid(filtered);
+}
+
+function deleteRecipe(id) {
+    if (confirm('למחוק את המתכון?')) {
+        recipes = recipes.filter(r => r.id != id);
+        localStorage.setItem('chef_v108_final', JSON.stringify(recipes));
+        renderGrid();
+    }
 }
 
 function exportData() {
@@ -134,19 +125,17 @@ function importData(e) {
     reader.onload = (ev) => {
         const data = JSON.parse(ev.target.result);
         recipes = data.recipes || [];
-        shoppingList = data.shoppingList || [];
-        localStorage.setItem('chef_v107_data', JSON.stringify(recipes));
-        localStorage.setItem('chef_v107_shop', JSON.stringify(shoppingList));
+        localStorage.setItem('chef_v108_final', JSON.stringify(recipes));
         renderGrid();
-        alert("הנתונים שוחזרו!");
+        alert("הנתונים שוחזרו בהצלחה!");
     };
     reader.readAsText(e.target.files[0]);
 }
 
 function addToShop(item) {
     shoppingList.push(item);
-    localStorage.setItem('chef_v107_shop', JSON.stringify(shoppingList));
-    alert('נוסף לסל!');
+    localStorage.setItem('shop_v108_final', JSON.stringify(shoppingList));
+    alert('נוסף לרשימה!');
 }
 
 function toggleShoppingList() {
@@ -157,13 +146,13 @@ function toggleShoppingList() {
 
 function removeShop(i) {
     shoppingList.splice(i, 1);
-    localStorage.setItem('chef_v107_shop', JSON.stringify(shoppingList));
+    localStorage.setItem('shop_v108_final', JSON.stringify(shoppingList));
     toggleShoppingList();
 }
 
 function clearShoppingList() {
     shoppingList = [];
-    localStorage.setItem('chef_v107_shop', JSON.stringify([]));
+    localStorage.setItem('shop_v108_final', JSON.stringify([]));
     toggleShoppingList();
 }
 
@@ -180,8 +169,6 @@ function openModal(id = null) {
         document.getElementById('editIng').value = r.ingredients.join('\n');
         document.getElementById('editSteps').value = r.instructions.join('\n');
         document.getElementById('modalTitle').innerText = "עריכת מתכון";
-    } else {
-        document.getElementById('modalTitle').innerText = "מתכון חדש";
     }
     document.getElementById('editModal').classList.remove('hidden');
 }
