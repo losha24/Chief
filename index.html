@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chef-השף הצעיר | גרסה 1.0.0</title>
+    <title>Chef-השף הצעיר | v1.0.1</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="stylesheet" href="styles.css">
@@ -15,11 +15,20 @@
                 <img src="logo.png" alt="Logo" class="app-logo">
                 <h1 class="app-title">Chef-<span>השף הצעיר</span></h1>
             </div>
-            <button onclick="silentUpdate()" class="update-btn-top">🔄 עדכון/רענון</button>
+            <button onclick="silentUpdate()" class="update-btn-top">🔄 רענון</button>
         </header>
 
-        <div class="search-section">
-            <input type="text" id="searchInput" placeholder="חפש מתכון..." oninput="handleSearch()">
+        <div class="filter-bar">
+            <input type="text" id="searchInput" placeholder="חפש מתכון..." oninput="filterRecipes()">
+            <select id="categoryFilter" onchange="filterRecipes()">
+                <option value="הכל">הכל</option>
+                <option value="בשרי">בשרי 🥩</option>
+                <option value="חלבי">חלבי 🧀</option>
+                <option value="מאפים">מאפים 🥐</option>
+                <option value="קינוחים">קינוחים 🍰</option>
+                <option value="סלטים">סלטים 🥗</option>
+                <option value="פסטות">פסטות 🍝</option>
+            </select>
         </div>
 
         <main id="recipeGrid" class="recipe-grid"></main>
@@ -56,12 +65,12 @@
                     <div class="input-group">
                         <select id="editCat">
                             <option value="">קטגוריה (חובה)</option>
-                            <option value="בשרי">בשרי 🥩</option>
-                            <option value="חלבי">חלבי 🧀</option>
-                            <option value="מאפים">מאפים 🥐</option>
-                            <option value="קינוחים">קינוחים 🍰</option>
-                            <option value="סלטים">סלטים 🥗</option>
-                            <option value="פסטות">פסטות 🍝</option>
+                            <option value="בשרי">בשרי</option>
+                            <option value="חלבי">חלבי</option>
+                            <option value="מאפים">מאפים</option>
+                            <option value="קינוחים">קינוחים</option>
+                            <option value="סלטים">סלטים</option>
+                            <option value="פסטות">פסטות</option>
                         </select>
                         <select id="editRating">
                             <option value="5">⭐⭐⭐⭐⭐</option>
@@ -80,7 +89,7 @@
                         <input type="file" id="imgUpload" accept="image/*" onchange="handleImageUpload(event)" style="display:none">
                         <div id="imgPreview"></div>
                     </div>
-                    <textarea id="editIng" placeholder="מצרכים (חובה - כל מצרך בשורה)"></textarea>
+                    <textarea id="editIng" placeholder="מצרכים (חובה - כל אחד בשורה)"></textarea>
                     <textarea id="editSteps" placeholder="הוראות הכנה"></textarea>
                     <button onclick="saveRecipe()" class="btn-save-full">שמור מתכון</button>
                 </div>
@@ -102,13 +111,8 @@
             </div>
         </div>
         
-        <footer class="version-footer">© 2026 אלכסיי זבודיסקר | v1.0.0</footer>
+        <footer class="version-footer">© 2026 אלכסיי זבודיסקר | v1.0.1</footer>
     </div>
     <script src="app.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
-        }
-    </script>
 </body>
 </html>
