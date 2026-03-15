@@ -1,23 +1,19 @@
-/* ... אותן הגדרות קודמות ... */
-
-.header-btns {
-    display: flex;
-    gap: 8px;
-}
-
-.update-btn-top {
-    background: #f3f4f6;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.update-btn-top:active {
-    transform: scale(0.9);
-}
-
-/* שאר ה-CSS נשאר זהה לגרסה 1.0.3 שנתתי לך קודם */
+body { font-family: sans-serif; direction: rtl; background: #f4f4f4; margin: 0; }
+.app-container { max-width: 500px; margin: 0 auto; background: white; min-height: 100vh; position: relative; }
+header { display: flex; justify-content: space-between; padding: 15px; background: #fff; border-bottom: 2px solid #eee; position: sticky; top:0; z-index:10; }
+.btn-install { background: #eee; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+.btn-refresh { background: #eee; border: none; padding: 8px; border-radius: 8px; cursor: pointer; }
+.filter-bar { padding: 10px; display: flex; gap: 5px; }
+input, select, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+.recipe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+.card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.card-icon { font-size: 2rem; margin-bottom: 5px; }
+.card-btns { display: flex; justify-content: space-around; margin-top: 10px; }
+.bottom-nav { position: fixed; bottom: 0; width: 500px; max-width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 15px 0; border-top: 2px solid #eee; }
+.nav-item { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+.main-add { background: #facc15 !important; width: 50px; height: 50px; border-radius: 50%; transform: translateY(-25px); font-size: 2rem; }
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; display: flex; align-items: center; justify-content: center; }
+.modal-content { background: white; width: 90%; padding: 20px; border-radius: 15px; max-height: 80vh; overflow-y: auto; }
+.hidden { display: none; }
+.btn-save { width: 100%; padding: 15px; background: #facc15; border: none; border-radius: 10px; font-weight: bold; font-size: 1rem; }
+.full-view { height: 100vh; width: 100vw; border-radius: 0; }
