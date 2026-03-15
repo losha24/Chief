@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ChefPro v1.0.5</title>
+    <title>ChefPro v1.0.6</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="stylesheet" href="styles.css">
@@ -17,7 +17,7 @@
             </div>
             <div class="header-btns">
                 <button id="installBtn" class="update-btn-top" style="display:none;" onclick="installPWA()">📲 התקנה</button>
-                <button onclick="silentUpdate()" class="update-btn-top">🔄 רענון</button>
+                <button onclick="location.reload(true)" class="update-btn-top">🔄 רענון</button>
             </div>
         </header>
 
@@ -49,11 +49,6 @@
                 <span class="nav-icon">📥</span>
                 <span class="nav-label">גיבוי</span>
             </button>
-            <label class="nav-item">
-                <span class="nav-icon">📤</span>
-                <span class="nav-label">שחזור</span>
-                <input type="file" id="importFile" style="display:none" onchange="importData(event)">
-            </label>
         </nav>
 
         <div id="editModal" class="modal hidden">
@@ -65,38 +60,31 @@
                 <div class="form-body">
                     <input type="hidden" id="editId">
                     <input type="text" id="editTitle" placeholder="שם המתכון (חובה)">
-                    <div class="input-group">
-                        <select id="editCat">
-                            <option value="">קטגוריה</option>
-                            <option value="בשרי">בשרי</option>
-                            <option value="חלבי">חלבי</option>
-                            <option value="מאפים">מאפים</option>
-                            <option value="קינוחים">קינוחים</option>
-                            <option value="סלטים">סלטים</option>
-                            <option value="פסטות">פסטות</option>
-                        </select>
-                        <select id="editRating">
-                            <option value="5">⭐⭐⭐⭐⭐</option>
-                            <option value="4">⭐⭐⭐⭐</option>
-                            <option value="3">⭐⭐⭐</option>
-                        </select>
-                    </div>
-                    <div class="file-upload-area">
-                        <label for="imgUpload" class="file-label">📸 בחר תמונה</label>
+                    <select id="editCat">
+                        <option value="">בחר קטגוריה</option>
+                        <option value="בשרי">בשרי</option>
+                        <option value="חלבי">חלבי</option>
+                        <option value="מאפים">מאפים</option>
+                        <option value="קינוחים">קינוחים</option>
+                        <option value="סלטים">סלטים</option>
+                        <option value="פסטות">פסטות</option>
+                    </select>
+                    <label class="file-label">
+                        📸 צלם/בחר תמונה
                         <input type="file" id="imgUpload" accept="image/*" onchange="handleImageUpload(event)" style="display:none">
-                        <div id="imgPreview"></div>
-                    </div>
-                    <textarea id="editIng" placeholder="מצרכים (כל אחד בשורה חדשה)"></textarea>
+                    </label>
+                    <div id="imgPreview"></div>
+                    <textarea id="editIng" placeholder="מצרכים (שורה לכל מצרך)"></textarea>
                     <textarea id="editSteps" placeholder="הוראות הכנה"></textarea>
-                    <button onclick="saveRecipe()" class="btn-save-full">שמור מתכון</button>
+                    <button onclick="saveRecipe()" class="btn-save-full">שמור עכשיו</button>
                 </div>
             </div>
         </div>
 
         <div id="recipeView" class="modal hidden"><div class="modal-content full-view"><button onclick="closeModal()" class="back-btn">➜ חזרה</button><div id="viewAreaContent"></div></div></div>
-        <div id="shoppingListModal" class="modal hidden"><div class="modal-content side-drawer"><div class="drawer-header"><h2>🛒 קניות</h2><button onclick="closeModal()" class="close-btn">✕</button></div><ul id="shoppingListItems" class="shop-list"></ul><button onclick="clearShoppingList()" class="btn-clear">נקה הכל</button></div></div>
+        <div id="shoppingListModal" class="modal hidden"><div class="modal-content side-drawer"><h2>🛒 קניות</h2><ul id="shoppingListItems"></ul><button onclick="clearShoppingList()" class="btn-clear">נקה הכל</button><button onclick="closeModal()" class="btn-save-full">סגור</button></div></div>
 
-        <footer class="version-footer">© 2026 אלכסיי זבודיסקר | v1.0.5</footer>
+        <footer class="version-footer">v1.0.6 | Alexey Z</footer>
     </div>
     <script src="app.js"></script>
 </body>
