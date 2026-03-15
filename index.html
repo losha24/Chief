@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ChefPro v1.0.4</title>
+    <title>ChefPro v1.0.5</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="stylesheet" href="styles.css">
@@ -58,10 +58,13 @@
 
         <div id="editModal" class="modal hidden">
             <div class="modal-content side-drawer">
-                <div class="drawer-header"><h2>מתכון חדש</h2><button onclick="closeModal()" class="close-btn">✕</button></div>
+                <div class="drawer-header">
+                    <h2 id="modalTitle">מתכון חדש</h2>
+                    <button onclick="closeModal()" class="close-btn">✕</button>
+                </div>
                 <div class="form-body">
                     <input type="hidden" id="editId">
-                    <input type="text" id="editTitle" placeholder="שם המתכון">
+                    <input type="text" id="editTitle" placeholder="שם המתכון (חובה)">
                     <div class="input-group">
                         <select id="editCat">
                             <option value="">קטגוריה</option>
@@ -72,11 +75,20 @@
                             <option value="סלטים">סלטים</option>
                             <option value="פסטות">פסטות</option>
                         </select>
-                        <select id="editRating"><option value="5">⭐⭐⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option></select>
+                        <select id="editRating">
+                            <option value="5">⭐⭐⭐⭐⭐</option>
+                            <option value="4">⭐⭐⭐⭐</option>
+                            <option value="3">⭐⭐⭐</option>
+                        </select>
                     </div>
-                    <textarea id="editIng" placeholder="מצרכים שורה אחר שורה"></textarea>
+                    <div class="file-upload-area">
+                        <label for="imgUpload" class="file-label">📸 בחר תמונה</label>
+                        <input type="file" id="imgUpload" accept="image/*" onchange="handleImageUpload(event)" style="display:none">
+                        <div id="imgPreview"></div>
+                    </div>
+                    <textarea id="editIng" placeholder="מצרכים (כל אחד בשורה חדשה)"></textarea>
                     <textarea id="editSteps" placeholder="הוראות הכנה"></textarea>
-                    <button onclick="saveRecipe()" class="btn-save-full">שמור</button>
+                    <button onclick="saveRecipe()" class="btn-save-full">שמור מתכון</button>
                 </div>
             </div>
         </div>
@@ -84,7 +96,7 @@
         <div id="recipeView" class="modal hidden"><div class="modal-content full-view"><button onclick="closeModal()" class="back-btn">➜ חזרה</button><div id="viewAreaContent"></div></div></div>
         <div id="shoppingListModal" class="modal hidden"><div class="modal-content side-drawer"><div class="drawer-header"><h2>🛒 קניות</h2><button onclick="closeModal()" class="close-btn">✕</button></div><ul id="shoppingListItems" class="shop-list"></ul><button onclick="clearShoppingList()" class="btn-clear">נקה הכל</button></div></div>
 
-        <footer class="version-footer">© 2026 אלכסיי זבודיסקר | v1.0.4</footer>
+        <footer class="version-footer">© 2026 אלכסיי זבודיסקר | v1.0.5</footer>
     </div>
     <script src="app.js"></script>
 </body>
