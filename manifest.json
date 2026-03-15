@@ -1,11 +1,12 @@
 {
-  "name": "Chef-השף הצעיר",
+  "name": "ChefPro - השף של אלכסיי",
   "short_name": "ChefPro",
-  "description": "אפליקציית המתכונים של אלכסיי",
+  "description": "אפליקציית ניהול המתכונים האישית של אלכסיי זבודיסקר",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#facc15",
+  "theme_color": "#ffd43b",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "logo.png",
