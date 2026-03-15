@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chef-השף הצעיר | אלכסיי זבודיסקר</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Chef-השף הצעיר | גרסה 1.0.0</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="app-container">
@@ -53,10 +53,9 @@
                 <div class="form-body">
                     <input type="hidden" id="editId">
                     <input type="text" id="editTitle" placeholder="שם המתכון (חובה)">
-                    
                     <div class="input-group">
                         <select id="editCat">
-                            <option value="">בחר קטגוריה (חובה)</option>
+                            <option value="">קטגוריה (חובה)</option>
                             <option value="בשרי">בשרי 🥩</option>
                             <option value="חלבי">חלבי 🧀</option>
                             <option value="מאפים">מאפים 🥐</option>
@@ -72,21 +71,17 @@
                             <option value="1">⭐</option>
                         </select>
                     </div>
-
                     <div class="input-group">
                         <input type="text" id="editTime" placeholder="זמן">
                         <input type="number" id="editServings" placeholder="מנות">
                     </div>
-
                     <div class="file-upload-area">
-                        <label for="imgUpload" class="file-label">📸 העלה תמונה</label>
-                        <input type="file" id="imgUpload" accept="image/*" onchange="handleImageUpload(event)">
+                        <label for="imgUpload" class="file-label">📸 בחר תמונה</label>
+                        <input type="file" id="imgUpload" accept="image/*" onchange="handleImageUpload(event)" style="display:none">
                         <div id="imgPreview"></div>
                     </div>
-
                     <textarea id="editIng" placeholder="מצרכים (חובה - כל מצרך בשורה)"></textarea>
                     <textarea id="editSteps" placeholder="הוראות הכנה"></textarea>
-                    
                     <button onclick="saveRecipe()" class="btn-save-full">שמור מתכון</button>
                 </div>
             </div>
@@ -94,12 +89,9 @@
 
         <div id="shoppingListModal" class="modal hidden">
             <div class="modal-content side-drawer">
-                <div class="drawer-header">
-                    <h2>🛒 רשימת קניות</h2>
-                    <button onclick="closeModal()" class="close-btn">✕</button>
-                </div>
+                <div class="drawer-header"><h2>🛒 קניות</h2><button onclick="closeModal()" class="close-btn">✕</button></div>
                 <ul id="shoppingListItems" class="shop-list"></ul>
-                <button onclick="clearShoppingList()" class="btn-clear">נקה רשימה</button>
+                <button onclick="clearShoppingList()" class="btn-clear">נקה הכל</button>
             </div>
         </div>
 
@@ -110,8 +102,13 @@
             </div>
         </div>
         
-        <footer class="version-footer">© 2026 אלכסיי זבודיסקר | v7.3.1</footer>
+        <footer class="version-footer">© 2026 אלכסיי זבודיסקר | v1.0.0</footer>
     </div>
     <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
+        }
+    </script>
 </body>
 </html>
