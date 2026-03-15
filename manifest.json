@@ -1,7 +1,7 @@
 {
   "name": "Chef-השף הצעיר",
   "short_name": "ChefPro",
-  "description": "אפליקציית ניהול מתכונים מקצועית",
+  "description": "אפליקציית המתכונים של אלכסיי",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
