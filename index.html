@@ -3,25 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ChefPro v1.0.8</title>
+    <title>ChefPro v1.0.9</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="app-container">
         <header class="main-header">
             <div class="brand-area">
-                <div class="logo-circle">
-                    <img src="logo.png" alt="Logo" class="app-logo" onerror="this.style.display='none'">
-                    <span class="logo-fallback">👨‍🍳</span>
-                </div>
                 <h1 class="app-title">Chef-<span>השף</span></h1>
             </div>
             <div class="header-btns">
-                <button id="installBtn" class="btn-install" style="display:none;" onclick="installPWA()">📲 התקנה</button>
-                <button onclick="location.reload(true)" class="btn-refresh">🔄 רענון</button>
+                <button id="installBtn" class="btn-install-always" onclick="installPWA()">📲 התקנה</button>
+                <button onclick="location.reload(true)" class="btn-refresh">🔄</button>
             </div>
         </header>
 
@@ -91,7 +86,7 @@
         </div>
 
         <footer class="version-footer">
-            <p>© 2026 אלכסיי זבודיסקר | גרסה 1.0.8</p>
+            <p>© 2026 אלכסיי זבודיסקר | גרסה 1.0.9</p>
         </footer>
     </div>
     <script src="app.js"></script>
