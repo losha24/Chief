@@ -1,25 +1,20 @@
-/** ChefPro v1.0.6 | Alexey Zavodisker **/
+/** ChefPro v1.0.7 | Alexey Zavodisker **/
 
-const initialRecipes = [
-    { id: "1", title: "שניצל קריספי", category: "בשרי", rating: "5", img: "https://images.unsplash.com/photo-1594834712647-95b3279937dc?w=400", ingredients: ["חזה עוף", "פירורי לחם"], instructions: ["מטגנים עד הזהבה"] },
-    { id: "2", title: "פסטה רוזה", category: "פסטות", rating: "5", img: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400", ingredients: ["פסטה", "שמנת"], instructions: ["מבשלים ומערבבים"] }
+const initialData = [
+    { id: "1", title: "שניצל קריספי", category: "בשרי", ingredients: ["חזה עוף", "פירורי לחם"], instructions: ["מטגנים"] },
+    { id: "2", title: "פסטה רוזה", category: "פסטות", ingredients: ["פסטה", "שמנת"], instructions: ["מבשלים"] }
 ];
 
-// טעינה חכמה - אם הזיכרון ריק, נטען את הבסיסיים
-let recipes = JSON.parse(localStorage.getItem('chef_v1_0_6'));
-if (!recipes || recipes.length === 0) {
-    recipes = initialRecipes;
-}
-
-let shoppingList = JSON.parse(localStorage.getItem('shop_v1_0_6')) || [];
-let tempImageData = "";
+let recipes = JSON.parse(localStorage.getItem('chef_final_stable')) || initialData;
+let shoppingList = JSON.parse(localStorage.getItem('shop_final_stable')) || [];
 let deferredPrompt;
 
-// PWA Install
+// PWA Install Logic
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    document.getElementById('installBtn').style.display = 'inline-block';
+    const btn = document.getElementById('installBtn');
+    btn.style.display = 'inline-block';
 });
 
 async function installPWA() {
@@ -27,80 +22,103 @@ async function installPWA() {
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === 'accepted') {
-        document.getElementById('installBtn').style.backgroundColor = 'red';
-        document.getElementById('installBtn').innerText = '✅ הותקן';
+        const btn = document.getElementById('installBtn');
+        btn.style.backgroundColor = 'red'; // הופך לאדום לאחר התקנה
+        btn.innerText = '✅ מותקן';
     }
 }
 
 function renderGrid(data = recipes) {
     const grid = document.getElementById('recipeGrid');
-    if (!grid) return;
     grid.innerHTML = data.map(r => `
         <div class="card">
-            <img src="${r.img || 'https://via.placeholder.com/150'}" class="card-img" onclick="viewRecipe('${r.id}')">
-            <div class="card-content">
-                <span class="tag">${r.category}</span>
+            <div onclick="viewRecipe('${r.id}')">
+                <div class="card-icon">${getIcon(r.category)}</div>
                 <h3>${r.title}</h3>
             </div>
-            <div class="card-actions">
+            <div class="card-btns">
                 <button onclick="openModal('${r.id}')">✏️</button>
-                <button onclick="deleteRecipe('${r.id}')" style="color:red">🗑️</button>
+                <button onclick="deleteRecipe('${r.id}')">🗑️</button>
             </div>
         </div>
     `).join('');
 }
 
-function filterRecipes() {
-    const s = document.getElementById('searchInput').value.toLowerCase();
-    const c = document.getElementById('categoryFilter').value;
-    const filtered = recipes.filter(r => 
-        r.title.toLowerCase().includes(s) && (c === 'הכל' || r.category === c)
-    );
-    renderGrid(filtered);
+function getIcon(cat) {
+    const icons = { "בשרי": "🥩", "חלבי": "🧀", "מאפים": "🥐", "קינוחים": "🍰", "סלטים": "🥗", "פסטות": "🍝" };
+    return icons[cat] || "🍽️";
 }
 
 function saveRecipe() {
     const id = document.getElementById('editId').value;
     const title = document.getElementById('editTitle').value.trim();
-    const cat = document.getElementById('editCat').value;
+    if (!title) return alert("צריך שם!");
 
-    if (!title || !cat) {
-        alert("נא למלא שם וקטגוריה!");
-        return;
-    }
-
-    const newRecipe = {
+    const r = {
         id: id || Date.now().toString(),
         title: title,
-        category: cat,
-        rating: "5",
-        img: tempImageData || (id ? recipes.find(x => x.id == id).img : 'https://via.placeholder.com/150'),
+        category: document.getElementById('editCat').value,
         ingredients: document.getElementById('editIng').value.split('\n').filter(l => l.trim()),
         instructions: document.getElementById('editSteps').value.split('\n').filter(l => l.trim())
     };
 
-    if (id) {
-        const idx = recipes.findIndex(x => x.id == id);
-        recipes[idx] = newRecipe;
-    } else {
-        recipes.push(newRecipe);
-    }
+    if (id) recipes[recipes.findIndex(x => x.id == id)] = r;
+    else recipes.push(r);
 
-    localStorage.setItem('chef_v1_0_6', JSON.stringify(recipes));
+    localStorage.setItem('chef_final_stable', JSON.stringify(recipes));
     closeModal();
     renderGrid();
 }
 
-function handleImageUpload(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            tempImageData = ev.target.result;
-            document.getElementById('imgPreview').innerHTML = `<img src="${tempImageData}" style="width:100%; height:100px; object-fit:cover; border-radius:10px; margin-top:10px;">`;
-        };
-        reader.readAsDataURL(file);
+function viewRecipe(id) {
+    const r = recipes.find(x => x.id == id);
+    const content = document.getElementById('viewAreaContent');
+    content.innerHTML = `
+        <h1>${getIcon(r.category)} ${r.title}</h1>
+        <h4>מצרכים:</h4>
+        <p>${r.ingredients.join('<br>')}</p>
+        <h4>הוראות:</h4>
+        <p>${r.instructions.join('<br>')}</p>
+        <button onclick="shareWA('${r.id}')" class="btn-save" style="background:#25D366">שתף בוואצאפ 💬</button>
+    `;
+    document.getElementById('recipeView').classList.remove('hidden');
+}
+
+function shareWA(id) {
+    const r = recipes.find(x => x.id == id);
+    const text = `*${r.title}*%0A${r.ingredients.join('%0A')}`;
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+function filterRecipes() {
+    const s = document.getElementById('searchInput').value.toLowerCase();
+    const c = document.getElementById('categoryFilter').value;
+    const filtered = recipes.filter(r => r.title.toLowerCase().includes(s) && (c === 'הכל' || r.category === c));
+    renderGrid(filtered);
+}
+
+function deleteRecipe(id) {
+    if (confirm('למחוק?')) {
+        recipes = recipes.filter(r => r.id != id);
+        localStorage.setItem('chef_final_stable', JSON.stringify(recipes));
+        renderGrid();
     }
+}
+
+function exportData() {
+    const blob = new Blob([JSON.stringify({ recipes, shoppingList })], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'chef_backup.json'; a.click();
+}
+
+function importData(e) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        const d = JSON.parse(ev.target.result);
+        recipes = d.recipes || [];
+        localStorage.setItem('chef_final_stable', JSON.stringify(recipes));
+        renderGrid();
+    };
+    reader.readAsText(e.target.files[0]);
 }
 
 function openModal(id = null) {
@@ -108,9 +126,6 @@ function openModal(id = null) {
     document.getElementById('editTitle').value = "";
     document.getElementById('editIng').value = "";
     document.getElementById('editSteps').value = "";
-    document.getElementById('imgPreview').innerHTML = "";
-    tempImageData = "";
-
     if (id) {
         const r = recipes.find(x => x.id == id);
         document.getElementById('editId').value = r.id;
@@ -122,42 +137,6 @@ function openModal(id = null) {
     document.getElementById('editModal').classList.remove('hidden');
 }
 
-function viewRecipe(id) {
-    const r = recipes.find(x => x.id == id);
-    const content = document.getElementById('viewAreaContent');
-    content.innerHTML = `
-        <img src="${r.img}" style="width:100%; border-radius:15px;">
-        <h2>${r.title}</h2>
-        <p><b>${r.category}</b></p>
-        <p>${r.ingredients.join('<br>')}</p>
-        <hr>
-        <p>${r.instructions.join('<br>')}</p>
-        <button onclick="shareToWhatsApp('${r.id}')" style="background:#25D366; color:white; width:100%; padding:15px; border:none; border-radius:10px; font-weight:bold;">שתף בווטסאפ 💬</button>
-    `;
-    document.getElementById('recipeView').classList.remove('hidden');
-}
+function closeModal() { document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden')); }
 
-function shareToWhatsApp(id) {
-    const r = recipes.find(x => x.id == id);
-    const text = `*${r.title}*%0A${r.ingredients.join('%0A')}`;
-    window.open(`https://wa.me/?text=${text}`, '_blank');
-}
-
-function deleteRecipe(id) {
-    if(confirm('למחוק?')) {
-        recipes = recipes.filter(r => r.id != id);
-        localStorage.setItem('chef_v1_0_6', JSON.stringify(recipes));
-        renderGrid();
-    }
-}
-
-function closeModal() {
-    document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-}
-
-function exportData() {
-    const blob = new Blob([JSON.stringify({recipes, shoppingList})], {type: 'application/json'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'chef_backup.json'; a.click();
-}
-
-window.onload = () => renderGrid();
+window.onload = renderGrid;
