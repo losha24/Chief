@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ChefPro v1.0.7</title>
+    <title>ChefPro v1.0.8</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -13,7 +13,10 @@
     <div class="app-container">
         <header class="main-header">
             <div class="brand-area">
-                <img src="logo.png" alt="Logo" class="app-logo">
+                <div class="logo-circle">
+                    <img src="logo.png" alt="Logo" class="app-logo" onerror="this.style.display='none'">
+                    <span class="logo-fallback">👨‍🍳</span>
+                </div>
                 <h1 class="app-title">Chef-<span>השף</span></h1>
             </div>
             <div class="header-btns">
@@ -39,16 +42,21 @@
 
         <nav class="bottom-nav">
             <button onclick="openModal()" class="nav-item main-add">+</button>
-            <button onclick="toggleShoppingList()" class="nav-item">🛒</button>
-            <button onclick="exportData()" class="nav-item">📥</button>
-            <label class="nav-item">📤<input type="file" id="importFile" hidden onchange="importData(event)"></label>
+            <div class="nav-group">
+                <button onclick="toggleShoppingList()" class="nav-btn-text">🛒 קניות</button>
+                <button onclick="exportData()" class="nav-btn-text">📥 גיבוי</button>
+                <label class="nav-btn-text">
+                    📤 שחזור
+                    <input type="file" id="importFile" hidden onchange="importData(event)">
+                </label>
+            </div>
         </nav>
 
         <div id="editModal" class="modal hidden">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 id="modalTitle">מתכון חדש</h2>
-                    <button onclick="closeModal()">✕</button>
+                    <button onclick="closeModal()" class="close-x">✕</button>
                 </div>
                 <input type="hidden" id="editId">
                 <input type="text" id="editTitle" placeholder="שם המתכון">
@@ -60,7 +68,7 @@
                     <option value="סלטים">סלטים 🥗</option>
                     <option value="פסטות">פסטות 🍝</option>
                 </select>
-                <textarea id="editIng" placeholder="מצרכים (כל מצרך בשורה חדשה)"></textarea>
+                <textarea id="editIng" placeholder="מצרכים (שורה לכל מצרך)"></textarea>
                 <textarea id="editSteps" placeholder="הוראות הכנה"></textarea>
                 <button onclick="saveRecipe()" class="btn-save">שמור מתכון</button>
             </div>
@@ -77,10 +85,14 @@
             <div class="modal-content">
                 <h3>🛒 רשימת קניות</h3>
                 <ul id="shoppingItems"></ul>
-                <button onclick="clearShoppingList()" class="btn-save" style="background:#ff4d4d; margin-bottom:10px;">נקה הכל</button>
-                <button onclick="closeModal()" class="btn-save">סגור</button>
+                <button onclick="clearShoppingList()" class="btn-save" style="background:#ff6b6b; margin-bottom:10px;">נקה הכל</button>
+                <button onclick="closeModal()" class="btn-save" style="background:#ddd; color:#333;">סגור</button>
             </div>
         </div>
+
+        <footer class="version-footer">
+            <p>© 2026 אלכסיי זבודיסקר | גרסה 1.0.8</p>
+        </footer>
     </div>
     <script src="app.js"></script>
 </body>
