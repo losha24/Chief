@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ChefPro v1.0.2</title>
+    <title>ChefPro v1.0.4</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="stylesheet" href="styles.css">
@@ -15,13 +15,16 @@
                 <img src="logo.png" alt="Logo" class="app-logo">
                 <h1 class="app-title">Chef-<span>השף</span></h1>
             </div>
-            <button onclick="silentUpdate()" class="update-btn-top">🔄 רענון</button>
+            <div class="header-btns">
+                <button id="installBtn" class="update-btn-top" style="display:none;" onclick="installPWA()">📲 התקנה</button>
+                <button onclick="silentUpdate()" class="update-btn-top">🔄 רענון</button>
+            </div>
         </header>
 
         <div class="filter-bar">
-            <input type="text" id="searchInput" placeholder="חפש..." oninput="filterRecipes()">
+            <input type="text" id="searchInput" placeholder="חפש מתכון..." oninput="filterRecipes()">
             <select id="categoryFilter" onchange="filterRecipes()">
-                <option value="הכל">הכל</option>
+                <option value="הכל">הכל 🍽️</option>
                 <option value="בשרי">בשרי 🥩</option>
                 <option value="חלבי">חלבי 🧀</option>
                 <option value="מאפים">מאפים 🥐</option>
@@ -69,38 +72,20 @@
                             <option value="סלטים">סלטים</option>
                             <option value="פסטות">פסטות</option>
                         </select>
-                        <select id="editRating"><option value="5">⭐⭐⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option><option value="3">⭐⭐⭐</option></select>
+                        <select id="editRating"><option value="5">⭐⭐⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option></select>
                     </div>
-                    <div class="file-upload-area">
-                        <label for="imgUpload" class="file-label">📸 תמונה</label>
-                        <input type="file" id="imgUpload" accept="image/*" onchange="handleImageUpload(event)" style="display:none">
-                        <div id="imgPreview"></div>
-                    </div>
-                    <textarea id="editIng" placeholder="מצרכים (כל אחד בשורה)"></textarea>
+                    <textarea id="editIng" placeholder="מצרכים שורה אחר שורה"></textarea>
                     <textarea id="editSteps" placeholder="הוראות הכנה"></textarea>
                     <button onclick="saveRecipe()" class="btn-save-full">שמור</button>
                 </div>
             </div>
         </div>
 
-        <div id="shoppingListModal" class="modal hidden">
-            <div class="modal-content side-drawer">
-                <div class="drawer-header"><h2>🛒 קניות</h2><button onclick="closeModal()" class="close-btn">✕</button></div>
-                <ul id="shoppingListItems" class="shop-list"></ul>
-                <button onclick="clearShoppingList()" class="btn-clear">נקה הכל</button>
-            </div>
-        </div>
+        <div id="recipeView" class="modal hidden"><div class="modal-content full-view"><button onclick="closeModal()" class="back-btn">➜ חזרה</button><div id="viewAreaContent"></div></div></div>
+        <div id="shoppingListModal" class="modal hidden"><div class="modal-content side-drawer"><div class="drawer-header"><h2>🛒 קניות</h2><button onclick="closeModal()" class="close-btn">✕</button></div><ul id="shoppingListItems" class="shop-list"></ul><button onclick="clearShoppingList()" class="btn-clear">נקה הכל</button></div></div>
 
-        <div id="recipeView" class="modal hidden">
-            <div class="modal-content full-view">
-                <button onclick="closeModal()" class="back-btn">➜ חזרה</button>
-                <div id="viewAreaContent"></div>
-            </div>
-        </div>
-        
-        <footer class="version-footer">© 2026 אלכסיי זבודיסקר | v1.0.2</footer>
+        <footer class="version-footer">© 2026 אלכסיי זבודיסקר | v1.0.4</footer>
     </div>
     <script src="app.js"></script>
-    <script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }</script>
 </body>
 </html>
