@@ -1,32 +1,40 @@
-/** ChefPro v1.0.8 | Alexey Zavodisker **/
-
 const initialData = [
-    { id: "1", title: "שניצל קריספי", category: "בשרי", ingredients: ["חזה עוף פרוס", "ביצים", "פירורי לחם"], instructions: ["טובלים בביצה", "מצפים ומטגנים"] },
+    { id: "1", title: "שניצל קריספי", category: "בשרי", ingredients: ["חזה עוף פרוס", "ביצים", "פירורי לחם"], instructions: ["טובלים בביצה", "מצפים ומטגנים עד להזהבה"] },
     { id: "2", title: "פסטה ברוטב עגבניות", category: "פסטות", ingredients: ["פסטה", "רסק עגבניות", "שום"], instructions: ["מבשלים פסטה ומערבבים עם הרוטב"] }
 ];
 
-let recipes = JSON.parse(localStorage.getItem('chef_v108_final')) || initialData;
-let shoppingList = JSON.parse(localStorage.getItem('shop_v108_final')) || [];
+let recipes = JSON.parse(localStorage.getItem('chef_v109_stable')) || initialData;
+let shoppingList = JSON.parse(localStorage.getItem('shop_v109_stable')) || [];
 let deferredPrompt;
 
-// PWA Install Logic
+function updateInstallButtonUI() {
+    const btn = document.getElementById('installBtn');
+    if (!btn) return;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (isStandalone) {
+        btn.style.backgroundColor = "red";
+        btn.style.color = "white";
+        btn.innerText = "✅ מותקן";
+    } else {
+        btn.style.backgroundColor = "lightblue";
+        btn.style.color = "#333";
+        btn.innerText = "📲 התקנה";
+    }
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    const btn = document.getElementById('installBtn');
-    if(btn) btn.style.display = 'inline-block';
 });
 
 async function installPWA() {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+        alert("האפליקציה כבר מותקנת או שהדפדפן אינו תומך בהתקנה מהירה.");
+        return;
+    }
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-        const btn = document.getElementById('installBtn');
-        btn.style.backgroundColor = '#ff4d4d'; 
-        btn.style.color = 'white';
-        btn.innerText = '✅ מותקן';
-    }
+    if (outcome === 'accepted') updateInstallButtonUI();
     deferredPrompt = null;
 }
 
@@ -57,7 +65,6 @@ function saveRecipe() {
     const id = document.getElementById('editId').value;
     const title = document.getElementById('editTitle').value.trim();
     if (!title) return alert("נא להזין שם למתכון");
-
     const r = {
         id: id || Date.now().toString(),
         title: title,
@@ -65,11 +72,9 @@ function saveRecipe() {
         ingredients: document.getElementById('editIng').value.split('\n').filter(l => l.trim()),
         instructions: document.getElementById('editSteps').value.split('\n').filter(l => l.trim())
     };
-
     if (id) recipes[recipes.findIndex(x => x.id == id)] = r;
     else recipes.push(r);
-
-    localStorage.setItem('chef_v108_final', JSON.stringify(recipes));
+    localStorage.setItem('chef_v109_stable', JSON.stringify(recipes));
     closeModal();
     renderGrid();
 }
@@ -78,39 +83,31 @@ function viewRecipe(id) {
     const r = recipes.find(x => x.id == id);
     const content = document.getElementById('viewAreaContent');
     content.innerHTML = `
-        <div class="view-card">
-            <h1 class="view-title">${getIcon(r.category)} ${r.title}</h1>
-            <div class="view-section">
-                <h3>📋 מצרכים</h3>
-                <ul>${r.ingredients.map(i => `<li>${i} <button onclick="addToShop('${i}')" class="mini-add-btn">🛒</button></li>`).join('')}</ul>
-            </div>
-            <div class="view-section">
-                <h3>👨‍🍳 הוראות הכנה</h3>
-                <p>${r.instructions.join('<br>')}</p>
-            </div>
-            <button onclick="shareWA('${r.id}')" class="btn-wa">שתף ב-WhatsApp 💬</button>
-        </div>
+        <h1 style="color:#d35400">${getIcon(r.category)} ${r.title}</h1>
+        <h3>📋 מצרכים</h3>
+        <ul style="list-style:none; padding:0;">${r.ingredients.map(i => `<li>- ${i} <button onclick="addToShop('${i}')" style="border:none; background:none; cursor:pointer;">🛒</button></li>`).join('')}</ul>
+        <h3>👨‍🍳 הוראות</h3>
+        <p>${r.instructions.join('<br>')}</p>
+        <button onclick="shareWA('${r.id}')" class="btn-save" style="background:#25D366; color:white;">שתף ב-WhatsApp 💬</button>
     `;
     document.getElementById('recipeView').classList.remove('hidden');
 }
 
 function shareWA(id) {
     const r = recipes.find(x => x.id == id);
-    const text = `*מתכון מהשף:* %0A*${r.title}*%0A%0A*מצרכים:*%0A${r.ingredients.join('%0A')}`;
-    window.open(`https://wa.me/?text=${text}`, '_blank');
+    window.open(`https://wa.me/?text=*${r.title}*%0A${r.ingredients.join('%0A')}`, '_blank');
 }
 
 function filterRecipes() {
     const s = document.getElementById('searchInput').value.toLowerCase();
     const c = document.getElementById('categoryFilter').value;
-    const filtered = recipes.filter(r => r.title.toLowerCase().includes(s) && (c === 'הכל' || r.category === c));
-    renderGrid(filtered);
+    renderGrid(recipes.filter(r => r.title.toLowerCase().includes(s) && (c === 'הכל' || r.category === c)));
 }
 
 function deleteRecipe(id) {
-    if (confirm('למחוק את המתכון?')) {
+    if (confirm('למחוק?')) {
         recipes = recipes.filter(r => r.id != id);
-        localStorage.setItem('chef_v108_final', JSON.stringify(recipes));
+        localStorage.setItem('chef_v109_stable', JSON.stringify(recipes));
         renderGrid();
     }
 }
@@ -123,56 +120,54 @@ function exportData() {
 function importData(e) {
     const reader = new FileReader();
     reader.onload = (ev) => {
-        const data = JSON.parse(ev.target.result);
-        recipes = data.recipes || [];
-        localStorage.setItem('chef_v108_final', JSON.stringify(recipes));
+        const d = JSON.parse(ev.target.result);
+        recipes = d.recipes || [];
+        localStorage.setItem('chef_v109_stable', JSON.stringify(recipes));
         renderGrid();
-        alert("הנתונים שוחזרו בהצלחה!");
     };
     reader.readAsText(e.target.files[0]);
 }
 
 function addToShop(item) {
     shoppingList.push(item);
-    localStorage.setItem('shop_v108_final', JSON.stringify(shoppingList));
-    alert('נוסף לרשימה!');
+    localStorage.setItem('shop_v109_stable', JSON.stringify(shoppingList));
+    alert('נוסף!');
 }
 
 function toggleShoppingList() {
-    const list = document.getElementById('shoppingItems');
-    list.innerHTML = shoppingList.map((item, i) => `<li>${item} <button onclick="removeShop(${i})">✕</button></li>`).join('');
+    document.getElementById('shoppingItems').innerHTML = shoppingList.map((item, i) => `<li>${item} <button onclick="removeShop(${i})" style="border:none; background:none;">✕</button></li>`).join('');
     document.getElementById('shoppingModal').classList.remove('hidden');
 }
 
 function removeShop(i) {
     shoppingList.splice(i, 1);
-    localStorage.setItem('shop_v108_final', JSON.stringify(shoppingList));
+    localStorage.setItem('shop_v109_stable', JSON.stringify(shoppingList));
     toggleShoppingList();
 }
 
 function clearShoppingList() {
     shoppingList = [];
-    localStorage.setItem('shop_v108_final', JSON.stringify([]));
+    localStorage.setItem('shop_v109_stable', JSON.stringify([]));
     toggleShoppingList();
 }
 
 function openModal(id = null) {
-    document.getElementById('editId').value = "";
-    document.getElementById('editTitle').value = "";
-    document.getElementById('editIng').value = "";
-    document.getElementById('editSteps').value = "";
+    document.getElementById('editId').value = id || "";
     if (id) {
         const r = recipes.find(x => x.id == id);
-        document.getElementById('editId').value = r.id;
         document.getElementById('editTitle').value = r.title;
         document.getElementById('editCat').value = r.category;
         document.getElementById('editIng').value = r.ingredients.join('\n');
         document.getElementById('editSteps').value = r.instructions.join('\n');
-        document.getElementById('modalTitle').innerText = "עריכת מתכון";
+    } else {
+        document.getElementById('editTitle').value = "";
+        document.getElementById('editIng').value = "";
+        document.getElementById('editSteps').value = "";
     }
     document.getElementById('editModal').classList.remove('hidden');
 }
 
 function closeModal() { document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden')); }
 
-window.onload = () => renderGrid();
+window.onload = () => { renderGrid(); updateInstallButtonUI(); };
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
