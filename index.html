@@ -14,12 +14,9 @@
         <header>
             <div class="brand"><img src="logo.png" alt="Logo" class="main-logo"></div>
             <div class="global-actions">
-                <button id="installBtn" class="btn-outline hidden">📲 התקן</button>
+                <button onclick="checkForUpdate()" class="btn-update">🔄 עדכן גרסה</button>
                 <button onclick="toggleShoppingList()" class="btn-outline">🛒 קניות</button>
                 <button onclick="exportData()" class="btn-outline">📥 גיבוי</button>
-                <label class="btn-outline">📤 שחזור
-                    <input type="file" id="importFile" style="display:none" onchange="importData(event)">
-                </label>
             </div>
         </header>
 
@@ -32,20 +29,44 @@
         <div id="editModal" class="modal hidden">
             <div class="modal-content">
                 <input type="hidden" id="editId">
-                <h2>עריכת מתכון</h2>
+                <h2 id="modalHeaderTitle">פרטי המתכון</h2>
+                
+                <label>כותרת המתכון:</label>
+                <input type="text" id="editTitle" placeholder="למשל: השניצל של אלכסיי">
+                
                 <div class="form-row">
-                    <input type="text" id="editTitle" placeholder="שם המתכון">
-                    <input type="text" id="editCat" placeholder="קטגוריה">
+                    <div>
+                        <label>קטגוריה:</label>
+                        <input type="text" id="editCat" placeholder="בשרי / חלבי / קינוח">
+                    </div>
+                    <div>
+                        <label>דירוג (1-5):</label>
+                        <select id="editRating">
+                            <option value="5">⭐⭐⭐⭐⭐</option>
+                            <option value="4">⭐⭐⭐⭐</option>
+                            <option value="3">⭐⭐⭐</option>
+                            <option value="2">⭐⭐</option>
+                            <option value="1">⭐</option>
+                        </select>
+                    </div>
                 </div>
+
                 <div class="form-row">
-                    <input type="text" id="editTime" placeholder="זמן">
-                    <input type="number" id="editServings" placeholder="מנות">
+                    <input type="text" id="editTime" placeholder="זמן הכנה (למשל: 40 דק')">
+                    <input type="number" id="editServings" placeholder="מספר מנות">
                 </div>
-                <input type="text" id="editImg" placeholder="קישור לתמונה">
-                <textarea id="editIng" placeholder="מצרכים (כל אחד בשורה)"></textarea>
-                <textarea id="editSteps" placeholder="הוראות הכנה..."></textarea>
+
+                <label>קישור לתמונה:</label>
+                <input type="text" id="editImg" placeholder="הדבק URL של תמונה כאן">
+
+                <label>מצרכים (כל מצרך בשורה חדשה):</label>
+                <textarea id="editIng" rows="4"></textarea>
+
+                <label>הוראות הכנה (כל שלב בשורה חדשה):</label>
+                <textarea id="editSteps" rows="4"></textarea>
+
                 <div class="modal-actions">
-                    <button onclick="saveRecipe()" class="btn-primary">שמור</button>
+                    <button onclick="saveRecipe()" class="btn-primary">שמור מתכון</button>
                     <button onclick="closeModal()" class="btn-text">ביטול</button>
                 </div>
             </div>
@@ -58,16 +79,9 @@
             </div>
         </div>
 
-        <div id="shoppingListModal" class="modal hidden">
-            <div class="modal-content">
-                <h2>🛒 רשימת קניות</h2>
-                <ul id="shoppingListItems"></ul>
-                <button onclick="clearShoppingList()" class="del-btn">נקה הכל</button>
-                <button onclick="closeModal()" class="btn-primary">סגור</button>
-            </div>
-        </div>
-
-        <footer><p>© 2026 כל הזכויות שמורות - אלכסיי זבודיסקר</p></footer>
+        <footer>
+            <p>© 2026 כל הזכויות שמורות - אלכסיי זבודיסקר | גרסה 7.2.3</p>
+        </footer>
     </div>
     <script src="app.js"></script>
 </body>
