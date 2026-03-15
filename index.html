@@ -2,45 +2,54 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chef Manager Pro | אלכסיי זבודיסקר</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chef-השף הצעיר | אלכסיי זבודיסקר</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="logo.png">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#facc15">
+    <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="brand"><img src="logo.png" alt="Logo" class="main-logo"></div>
-            <div class="global-actions">
-                <button onclick="checkForUpdate()" class="btn-update">🔄 עדכן גרסה</button>
-                <button onclick="toggleShoppingList()" class="btn-outline">🛒 קניות</button>
-                <button onclick="exportData()" class="btn-outline">📥 גיבוי</button>
+    <div class="app-container">
+        <header class="main-header">
+            <div class="brand-area">
+                <img src="logo.png" alt="Logo" class="app-logo">
+                <h1 class="app-title">Chef-<span>השף הצעיר</span></h1>
             </div>
+            <button onclick="checkForUpdate()" class="update-icon-btn" title="עדכן גרסה">🔄</button>
         </header>
 
-        <div class="toolbar">
-            <input type="text" id="searchInput" placeholder="חפש מתכון..." oninput="handleSearch()">
+        <div class="search-section">
+            <input type="text" id="searchInput" placeholder="חפש מתכון טעים..." oninput="handleSearch()">
         </div>
 
-        <div id="recipeGrid" class="grid"></div>
-        
+        <main id="recipeGrid" class="recipe-grid"></main>
+
+        <nav class="bottom-nav">
+            <button onclick="openModal()" class="nav-item main-add">
+                <span class="nav-icon">+</span>
+                <span class="nav-label">חדש</span>
+            </button>
+            <button onclick="toggleShoppingList()" class="nav-item">
+                <span class="nav-icon">🛒</span>
+                <span class="nav-label">קניות</span>
+            </button>
+            <button onclick="exportData()" class="nav-item">
+                <span class="nav-icon">📥</span>
+                <span class="nav-label">גיבוי</span>
+            </button>
+        </nav>
+
         <div id="editModal" class="modal hidden">
-            <div class="modal-content">
-                <input type="hidden" id="editId">
-                <h2 id="modalHeaderTitle">פרטי המתכון</h2>
-                
-                <label>כותרת המתכון:</label>
-                <input type="text" id="editTitle" placeholder="למשל: השניצל של אלכסיי">
-                
-                <div class="form-row">
-                    <div>
-                        <label>קטגוריה:</label>
-                        <input type="text" id="editCat" placeholder="בשרי / חלבי / קינוח">
-                    </div>
-                    <div>
-                        <label>דירוג (1-5):</label>
+            <div class="modal-content side-drawer">
+                <div class="drawer-header">
+                    <h2 id="modalHeaderTitle">מתכון חדש</h2>
+                    <button onclick="closeModal()" class="close-btn">✕</button>
+                </div>
+                <div class="form-body">
+                    <input type="hidden" id="editId">
+                    <input type="text" id="editTitle" placeholder="שם המתכון">
+                    <div class="input-group">
+                        <input type="text" id="editCat" placeholder="קטגוריה">
                         <select id="editRating">
                             <option value="5">⭐⭐⭐⭐⭐</option>
                             <option value="4">⭐⭐⭐⭐</option>
@@ -49,39 +58,26 @@
                             <option value="1">⭐</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="form-row">
-                    <input type="text" id="editTime" placeholder="זמן הכנה (למשל: 40 דק')">
-                    <input type="number" id="editServings" placeholder="מספר מנות">
-                </div>
-
-                <label>קישור לתמונה:</label>
-                <input type="text" id="editImg" placeholder="הדבק URL של תמונה כאן">
-
-                <label>מצרכים (כל מצרך בשורה חדשה):</label>
-                <textarea id="editIng" rows="4"></textarea>
-
-                <label>הוראות הכנה (כל שלב בשורה חדשה):</label>
-                <textarea id="editSteps" rows="4"></textarea>
-
-                <div class="modal-actions">
-                    <button onclick="saveRecipe()" class="btn-primary">שמור מתכון</button>
-                    <button onclick="closeModal()" class="btn-text">ביטול</button>
+                    <div class="input-group">
+                        <input type="text" id="editTime" placeholder="זמן">
+                        <input type="number" id="editServings" placeholder="מנות">
+                    </div>
+                    <input type="text" id="editImg" placeholder="קישור לתמונה">
+                    <textarea id="editIng" placeholder="מצרכים (כל אחד בשורה)"></textarea>
+                    <textarea id="editSteps" placeholder="הוראות (כל שלב בשורה)"></textarea>
+                    <button onclick="saveRecipe()" class="btn-save-full">שמור מתכון</button>
                 </div>
             </div>
         </div>
 
         <div id="recipeView" class="modal hidden">
-            <div class="modal-content view-area">
-                <button onclick="closeModal()" class="close-view">✕</button>
+            <div class="modal-content full-view">
+                <button onclick="closeModal()" class="back-btn">➜ חזרה</button>
                 <div id="viewAreaContent"></div>
             </div>
         </div>
-
-        <footer>
-            <p>© 2026 כל הזכויות שמורות - אלכסיי זבודיסקר | גרסה 7.2.3</p>
-        </footer>
+        
+        <footer class="version-footer">© 2026 אלכסיי זבודיסקר | v7.2.5</footer>
     </div>
     <script src="app.js"></script>
 </body>
