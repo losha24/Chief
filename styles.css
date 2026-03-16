@@ -1,182 +1,37 @@
-:root {
-    --primary: #d35400;
-    --accent: #f39c12;
-    --light-bg: #fdfaf7;
-    --header-bg: #fff;
-    --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
+:root { --primary: #d35400; --light-bg: #fdfaf7; }
+body { font-family: system-ui, sans-serif; margin: 0; direction: rtl; background: #f4f4f4; }
+.app-container { max-width: 500px; margin: 0 auto; background: #fff; min-height: 100vh; position: relative; }
 
-body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    margin: 0;
-    direction: rtl;
-    background-color: #f5f5f5;
-    color: #333;
-}
+header { background: #fff; border-bottom: 2px solid #eee; position: sticky; top: 0; z-index: 100; }
+.header-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: var(--light-bg); }
+.header-logo { width: 50px; height: 50px; }
+.main-title { font-size: 1.3rem; margin: 0; }
+.main-title span { color: var(--primary); font-weight: 800; }
 
-.app-container {
-    max-width: 500px;
-    margin: 0 auto;
-    background: #fff;
-    min-height: 100vh;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    position: relative;
-}
+.action-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; padding: 10px; background: #fff; }
+.action-item { background: #f9f9f9; border: 1px solid #eee; border-radius: 10px; padding: 8px 2px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+.action-item .icon { font-size: 1.2rem; }
+.action-item .text { font-size: 0.65rem; font-weight: bold; margin-top: 4px; color: #555; }
 
-/* Header & Logo */
-header {
-    background: var(--header-bg);
-    border-bottom: 2px solid #eee;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
+.recipe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; padding-bottom: 120px; }
+.recipe-card { background: #fff; border-radius: 15px; border: 1px solid #eee; padding: 15px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+.card-emoji { font-size: 2.5rem; }
+.cat-label { font-size: 0.75rem; color: #999; display: block; margin-top: 5px; }
+.card-btns-row { display: flex; justify-content: space-around; margin-top: 10px; border-top: 1px solid #f9f9f9; padding-top: 5px; }
+.card-btns-row button { background: none; border: none; font-size: 1.2rem; cursor: pointer; }
 
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    background: var(--light-bg);
-}
+.floating-add-btn { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; background: #f39c12; color: #fff; border: none; border-radius: 50%; font-size: 2.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 99; cursor: pointer; }
 
-.brand-box {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.header-logo {
-    width: 45px;
-    height: 45px;
-    object-fit: contain;
-}
-
-.main-title {
-    font-size: 1.25rem;
-    margin: 0;
-    color: #2c3e50;
-}
-
-.main-title span {
-    color: var(--primary);
-    font-weight: 800;
-}
-
-/* Button Grid */
-.action-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    padding: 10px;
-}
-
-.action-item {
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 8px 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.action-item .icon { font-size: 1.3rem; margin-bottom: 4px; }
-.action-item .text { font-size: 0.75rem; font-weight: bold; color: #666; }
-
-.btn-cart-only {
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
-
-.btn-refresh { border: none; background: none; font-size: 1.2rem; cursor: pointer; }
-
-/* Content Areas */
-.search-section { padding: 15px; display: flex; gap: 8px; }
-input, select, textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 0.9rem;
-}
-
-.recipe-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 15px;
-    padding-bottom: 120px;
-}
-
-.recipe-card {
-    background: #fff;
-    border-radius: 18px;
-    border: 1px solid #f0f0f0;
-    padding: 15px;
-    text-align: center;
-    box-shadow: var(--card-shadow);
-}
-
-.card-emoji { font-size: 2.2rem; margin-bottom: 8px; }
-.cat-label { font-size: 0.7rem; color: #999; background: #f9f9f9; padding: 2px 8px; border-radius: 10px; }
-
-/* Floating Add */
-.floating-add-btn {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 60px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    font-size: 2.5rem;
-    box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
-    cursor: pointer;
-    z-index: 99;
-}
-
-/* Modals */
-.modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: #fff;
-    width: 90%;
-    max-height: 85vh;
-    border-radius: 24px;
-    padding: 24px;
-    overflow-y: auto;
-}
-
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-content { background: #fff; width: 90%; max-height: 85vh; border-radius: 20px; padding: 20px; overflow-y: auto; }
 .hidden { display: none; }
+input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+.btn-primary { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+.btn-secondary { width: 100%; padding: 10px; background: #eee; border: none; border-radius: 10px; margin-top: 5px; cursor: pointer; }
+.btn-wa { width: 100%; padding: 12px; background: #25D366; color: #fff; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; }
 
-.btn-primary { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; margin-top: 10px; cursor: pointer; }
-.btn-secondary { background: #eee; color: #333; border: none; padding: 10px; border-radius: 12px; width: 100%; margin-top: 10px; cursor: pointer; }
-.btn-danger { background: #ff4757; color: white; border: none; padding: 10px; border-radius: 12px; width: 100%; margin-top: 10px; cursor: pointer; }
+.view-list { list-style: none; padding: 0; }
+.view-list li { margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.mini-add { border: none; background: #eee; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
 
-.app-footer {
-    text-align: center;
-    padding: 20px 0 100px;
-    font-size: 0.8rem;
-    color: #bdc3c7;
-    background: #fafafa;
-}
+.app-footer { text-align: center; padding: 20px 0 100px; font-size: 0.75rem; color: #bdc3c7; }
