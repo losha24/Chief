@@ -3,43 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>מתכוני ה-Chef v2.2.1</title>
+    <title>מתכוני ה-Chef v2.2.2</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="app-container">
-        <header class="mobile-header">
-            <div class="logo-container">
-                <img src="logo.png" alt="Chef Logo" class="big-logo">
-            </div>
-            <div id="titleStrip" class="title-strip">
-                <h1 class="main-title">מתכוני ה-<span>Chef</span></h1>
-            </div>
-            
+        <header>
+            <div class="logo-container"><img src="logo.png" alt="Chef Logo" class="big-logo"></div>
+            <div id="titleStrip" class="title-strip"><h1 class="main-title">מתכוני ה-<span>Chef</span></h1></div>
             <div class="action-grid">
-                <button id="installBtn" class="action-item" onclick="installPWA()">
-                    <span class="icon">📲</span><span class="text">התקנה</span>
-                </button>
-                <button onclick="toggleShoppingList()" class="action-item">
-                    <span class="icon">🛒</span><span class="text">קניות</span>
-                </button>
-                <button onclick="updateApp()" class="action-item">
-                    <span class="icon">🔄</span><span class="text">רענון</span>
-                </button>
-                <button onclick="exportData()" class="action-item">
-                    <span class="icon">📥</span><span class="text">גיבוי</span>
-                </button>
-                <label class="action-item">
-                    <span class="icon">📤</span><span class="text">שחזור</span>
-                    <input type="file" id="importFile" hidden onchange="importData(event)">
-                </label>
+                <button class="action-item" onclick="installPWA()"><span class="icon">📲</span><span class="text">התקנה</span></button>
+                <button class="action-item" onclick="toggleShoppingList()"><span class="icon">🛒</span><span class="text">קניות</span></button>
+                <button class="action-item" onclick="updateApp()"><span class="icon">🔄</span><span class="text">רענון</span></button>
+                <button class="action-item" onclick="exportData()"><span class="icon">📥</span><span class="text">גיבוי</span></button>
+                <label class="action-item"><span class="icon">📤</span><span class="text">שחזור</span><input type="file" id="importFile" hidden onchange="importData(event)"></label>
             </div>
         </header>
 
         <div class="search-section">
-            <input type="text" id="searchInput" placeholder="חפש מתכון..." oninput="filterRecipes()">
+            <input type="text" id="searchInput" placeholder="חפש במתכונים או במצרכים..." oninput="filterRecipes()">
             <select id="categoryFilter" onchange="filterRecipes()">
                 <option value="הכל">הכל 🍽️</option>
                 <option value="בשרי">בשרי 🥩</option>
@@ -52,56 +36,38 @@
         </div>
 
         <main id="recipeGrid" class="recipe-grid"></main>
-
         <button onclick="openModal()" class="floating-add-btn">+</button>
 
         <div id="editModal" class="modal hidden">
             <div class="modal-content">
-                <h3 id="modalTitle">מתכון חדש</h3>
-                <input type="hidden" id="editId">
-                <input type="text" id="editTitle" placeholder="שם המתכון">
+                <h3>מתכון חדש</h3>
+                <input type="hidden" id="editId"><input type="text" id="editTitle" placeholder="שם המתכון">
                 <select id="editCat">
-                    <option value="בשרי">🥩 בשרי</option>
-                    <option value="חלבי">🧀 חלבי</option>
-                    <option value="מאפים">🥐 מאפים</option>
-                    <option value="קינוחים">🍰 קינוחים</option>
-                    <option value="סלטים">🥗 סלטים</option>
-                    <option value="פסטות">🍝 פסטות</option>
+                    <option value="בשרי">🥩 בשרי</option><option value="חלבי">🧀 חלבי</option>
+                    <option value="מאפים">🥐 מאפים</option><option value="קינוחים">🍰 קינוחים</option>
+                    <option value="סלטים">🥗 סלטים</option><option value="פסטות">🍝 פסטות</option>
                 </select>
-                <div class="image-upload-area">
-                    <label class="btn-image-upload">
-                        <span class="icon">📷</span>
-                        <span class="text">בחר תמונה</span>
-                        <input type="file" id="editImage" accept="image/*" hidden onchange="previewImage(event)">
-                    </label>
-                    <img id="imagePreview" src="" alt="תצוגה מקדימה" class="image-preview hidden">
-                    <input type="hidden" id="editImageData"> </div>
-                <textarea id="editIng" placeholder="מצרכים וכמויות (שורה לכל מצרך)"></textarea>
-                <textarea id="editSteps" placeholder="הוראות הכנה (שורה לכל שלב)"></textarea>
+                <label class="btn-primary" style="background:#f0f0f0; color:#333; display:block; text-align:center; padding:10px; cursor:pointer;">
+                    📷 בחר תמונה <input type="file" accept="image/*" hidden onchange="previewImage(event)">
+                </label>
+                <img id="imagePreview" src="" class="image-preview hidden">
+                <input type="hidden" id="editImageData">
+                <textarea id="editIng" placeholder="מצרכים (שורה לכל מצרך)" style="height:100px"></textarea>
+                <textarea id="editSteps" placeholder="הוראות (שורה לכל שלב)" style="height:100px"></textarea>
                 <button onclick="saveRecipe()" class="btn-primary">שמור מתכון</button>
                 <button onclick="closeModal()" class="btn-secondary">ביטול</button>
             </div>
         </div>
 
         <div id="recipeView" class="modal hidden">
-            <div class="modal-content view-mode">
-                <div id="viewAreaContent"></div>
-                <button onclick="closeModal()" class="btn-secondary">חזרה לרשימה</button>
-            </div>
+            <div class="modal-content"><div id="viewAreaContent"></div><button onclick="closeModal()" class="btn-secondary">סגור</button></div>
         </div>
 
         <div id="shoppingModal" class="modal hidden">
-            <div class="modal-content">
-                <h3>🛒 רשימת קניות</h3>
-                <ul id="shoppingItems" class="shop-list-ul"></ul>
-                <button onclick="clearShoppingList()" class="btn-danger">נקה הכל</button>
-                <button onclick="closeModal()" class="btn-secondary">סגור</button>
-            </div>
+            <div class="modal-content"><h3>🛒 רשימת קניות</h3><ul id="shoppingItems"></ul><button onclick="clearShoppingList()" class="btn-primary" style="background:#e74c3c">נקה הכל</button><button onclick="closeModal()" class="btn-secondary">סגור</button></div>
         </div>
 
-        <footer class="app-footer">
-            <p>© 2026 אלכסיי זבודיסקר | גרסה 2.2.1</p>
-        </footer>
+        <footer class="app-footer"><p>© 2026 אלכסיי זבודיסקר | גרסה 2.2.2</p></footer>
     </div>
     <script src="app.js"></script>
 </body>
