@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>מתכוני ה-Chef v2.1.1</title>
+    <title>מתכוני ה-Chef v2.2.0</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="app-container">
-        <header class="main-header">
-            <div class="header-top">
-                <div class="brand-box">
-                    <img src="logo.png" alt="Logo" class="header-logo">
-                    <h1 class="main-title">מתכוני ה-<span>Chef</span></h1>
-                </div>
+        <header class="mobile-header">
+            <div class="logo-container">
+                <img src="logo.png" alt="Chef Logo" class="big-logo">
+            </div>
+            <div id="titleStrip" class="title-strip">
+                <h1 class="main-title">מתכוני ה-<span>Chef</span></h1>
             </div>
             
             <div class="action-grid">
@@ -61,16 +61,24 @@
                 <input type="hidden" id="editId">
                 <input type="text" id="editTitle" placeholder="שם המתכון">
                 <select id="editCat">
-                    <option value="בשרי">בשרי</option>
-                    <option value="חלבי">חלבי</option>
-                    <option value="מאפים">מאפים</option>
-                    <option value="קינוחים">קינוחים</option>
-                    <option value="סלטים">סלטים</option>
-                    <option value="פסטות">פסטות</option>
+                    <option value="בשרי">🥩 בשרי</option>
+                    <option value="חלבי">🧀 חלבי</option>
+                    <option value="מאפים">🥐 מאפים</option>
+                    <option value="קינוחים">🍰 קינוחים</option>
+                    <option value="סלטים">🥗 סלטים</option>
+                    <option value="פסטות">🍝 פסטות</option>
                 </select>
-                <textarea id="editIng" placeholder="מצרכים וכמויות (שורה לכל מצרך, למשל: 500 גרם קמח)"></textarea>
+                <div class="image-upload-area">
+                    <label class="btn-image-upload">
+                        <span class="icon">📷</span>
+                        <span class="text">בחר תמונה</span>
+                        <input type="file" id="editImage" accept="image/*" hidden onchange="previewImage(event)">
+                    </label>
+                    <img id="imagePreview" src="" alt="תצוגה מקדימה" class="image-preview hidden">
+                    <input type="hidden" id="editImageData"> </div>
+                <textarea id="editIng" placeholder="מצרכים וכמויות (שורה לכל מצרך)"></textarea>
                 <textarea id="editSteps" placeholder="הוראות הכנה (שורה לכל שלב)"></textarea>
-                <button onclick="saveRecipe()" class="btn-primary">שמור</button>
+                <button onclick="saveRecipe()" class="btn-primary">שמור מתכון</button>
                 <button onclick="closeModal()" class="btn-secondary">ביטול</button>
             </div>
         </div>
@@ -78,7 +86,7 @@
         <div id="recipeView" class="modal hidden">
             <div class="modal-content view-mode">
                 <div id="viewAreaContent"></div>
-                <button onclick="closeModal()" class="btn-secondary">סגור</button>
+                <button onclick="closeModal()" class="btn-secondary">חזרה לרשימה</button>
             </div>
         </div>
 
@@ -92,7 +100,7 @@
         </div>
 
         <footer class="app-footer">
-            <p>© 2026 אלכסיי זבודיסקר | גרסה 2.1.1</p>
+            <p>© 2026 אלכסיי זבודיסקר | גרסה 2.2.0</p>
         </footer>
     </div>
     <script src="app.js"></script>
