@@ -1,11 +1,11 @@
 {
-  "name": "ChefPro - השף של אלכסיי",
+  "name": "מתכוני ה-Chef",
   "short_name": "ChefPro",
-  "description": "אפליקציית ניהול המתכונים האישית של אלכסיי זבודיסקר",
+  "description": "ספר המתכונים האישי של אלכסיי",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffd43b",
+  "background_color": "#fdf6f0",
+  "theme_color": "#d35400",
   "orientation": "portrait",
   "icons": [
     {
