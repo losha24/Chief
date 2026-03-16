@@ -1,24 +1,20 @@
 const initialData = [
-    { id: "1", title: "שניצל קריספי", category: "בשרי", ingredients: ["חזה עוף פרוס", "ביצים", "פירורי לחם"], instructions: ["טובלים בביצה", "מצפים ומטגנים עד להזהבה"] },
-    { id: "2", title: "פסטה ברוטב עגבניות", category: "פסטות", ingredients: ["פסטה", "רסק עגבניות", "שום"], instructions: ["מבשלים פסטה ומערבבים עם הרוטב"] }
+    { id: "1", title: "שניצל קריספי", category: "בשרי", ingredients: ["חזה עוף פרוס", "ביצים", "פירורי לחם"], instructions: ["טובלים בביצה", "מצפים ומטגנים"] },
+    { id: "2", title: "פסטה ברוטב", category: "פסטות", ingredients: ["פסטה", "רסק עגבניות"], instructions: ["מבשלים ומערבבים"] }
 ];
 
-let recipes = JSON.parse(localStorage.getItem('chef_v109_stable')) || initialData;
-let shoppingList = JSON.parse(localStorage.getItem('shop_v109_stable')) || [];
+let recipes = JSON.parse(localStorage.getItem('chef_v110')) || initialData;
+let shoppingList = JSON.parse(localStorage.getItem('shop_v110')) || [];
 let deferredPrompt;
 
-function updateInstallButtonUI() {
+function updateInstallBtn() {
     const btn = document.getElementById('installBtn');
-    if (!btn) return;
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    if (isStandalone) {
-        btn.style.backgroundColor = "red";
-        btn.style.color = "white";
-        btn.innerText = "✅ מותקן";
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+    if (isPWA) {
+        btn.style.background = "#ff4d4d";
+        btn.querySelector('span').innerText = "מותקן";
     } else {
-        btn.style.backgroundColor = "lightblue";
-        btn.style.color = "#333";
-        btn.innerText = "📲 התקנה";
+        btn.style.background = "#e3f2fd";
     }
 }
 
@@ -28,29 +24,24 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 async function installPWA() {
-    if (!deferredPrompt) {
-        alert("האפליקציה כבר מותקנת או שהדפדפן אינו תומך בהתקנה מהירה.");
-        return;
-    }
+    if (!deferredPrompt) return alert("האפליקציה כבר מותקנת");
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') updateInstallButtonUI();
+    if (outcome === 'accepted') updateInstallBtn();
     deferredPrompt = null;
 }
 
 function renderGrid(data = recipes) {
     const grid = document.getElementById('recipeGrid');
-    if (!grid) return;
     grid.innerHTML = data.map(r => `
         <div class="card">
             <div onclick="viewRecipe('${r.id}')">
                 <div class="card-icon">${getIcon(r.category)}</div>
-                <h3 class="card-title">${r.title}</h3>
-                <span class="card-tag">${r.category}</span>
+                <h3>${r.title}</h3>
             </div>
-            <div class="card-btns">
+            <div class="card-footer">
                 <button onclick="openModal('${r.id}')">✏️</button>
-                <button onclick="deleteRecipe('${r.id}')" style="color:#ff6b6b">🗑️</button>
+                <button onclick="deleteRecipe('${r.id}')">🗑️</button>
             </div>
         </div>
     `).join('');
@@ -64,7 +55,7 @@ function getIcon(cat) {
 function saveRecipe() {
     const id = document.getElementById('editId').value;
     const title = document.getElementById('editTitle').value.trim();
-    if (!title) return alert("נא להזין שם למתכון");
+    if (!title) return;
     const r = {
         id: id || Date.now().toString(),
         title: title,
@@ -74,7 +65,7 @@ function saveRecipe() {
     };
     if (id) recipes[recipes.findIndex(x => x.id == id)] = r;
     else recipes.push(r);
-    localStorage.setItem('chef_v109_stable', JSON.stringify(recipes));
+    localStorage.setItem('chef_v110', JSON.stringify(recipes));
     closeModal();
     renderGrid();
 }
@@ -84,11 +75,11 @@ function viewRecipe(id) {
     const content = document.getElementById('viewAreaContent');
     content.innerHTML = `
         <h1 style="color:#d35400">${getIcon(r.category)} ${r.title}</h1>
-        <h3>📋 מצרכים</h3>
-        <ul style="list-style:none; padding:0;">${r.ingredients.map(i => `<li>- ${i} <button onclick="addToShop('${i}')" style="border:none; background:none; cursor:pointer;">🛒</button></li>`).join('')}</ul>
-        <h3>👨‍🍳 הוראות</h3>
+        <h3>מצרכים:</h3>
+        <ul>${r.ingredients.map(i => `<li>${i} <button onclick="addToShop('${i}')">🛒</button></li>`).join('')}</ul>
+        <h3>הכנה:</h3>
         <p>${r.instructions.join('<br>')}</p>
-        <button onclick="shareWA('${r.id}')" class="btn-save" style="background:#25D366; color:white;">שתף ב-WhatsApp 💬</button>
+        <button onclick="shareWA('${r.id}')" class="btn-confirm" style="background:#25D366">שתף WhatsApp</button>
     `;
     document.getElementById('recipeView').classList.remove('hidden');
 }
@@ -107,7 +98,7 @@ function filterRecipes() {
 function deleteRecipe(id) {
     if (confirm('למחוק?')) {
         recipes = recipes.filter(r => r.id != id);
-        localStorage.setItem('chef_v109_stable', JSON.stringify(recipes));
+        localStorage.setItem('chef_v110', JSON.stringify(recipes));
         renderGrid();
     }
 }
@@ -122,7 +113,7 @@ function importData(e) {
     reader.onload = (ev) => {
         const d = JSON.parse(ev.target.result);
         recipes = d.recipes || [];
-        localStorage.setItem('chef_v109_stable', JSON.stringify(recipes));
+        localStorage.setItem('chef_v110', JSON.stringify(recipes));
         renderGrid();
     };
     reader.readAsText(e.target.files[0]);
@@ -130,24 +121,24 @@ function importData(e) {
 
 function addToShop(item) {
     shoppingList.push(item);
-    localStorage.setItem('shop_v109_stable', JSON.stringify(shoppingList));
-    alert('נוסף!');
+    localStorage.setItem('shop_v110', JSON.stringify(shoppingList));
+    alert('נוסף לסל!');
 }
 
 function toggleShoppingList() {
-    document.getElementById('shoppingItems').innerHTML = shoppingList.map((item, i) => `<li>${item} <button onclick="removeShop(${i})" style="border:none; background:none;">✕</button></li>`).join('');
+    document.getElementById('shoppingItems').innerHTML = shoppingList.map((item, i) => `<li>${item} <button onclick="removeShop(${i})">✕</button></li>`).join('');
     document.getElementById('shoppingModal').classList.remove('hidden');
 }
 
 function removeShop(i) {
     shoppingList.splice(i, 1);
-    localStorage.setItem('shop_v109_stable', JSON.stringify(shoppingList));
+    localStorage.setItem('shop_v110', JSON.stringify(shoppingList));
     toggleShoppingList();
 }
 
 function clearShoppingList() {
     shoppingList = [];
-    localStorage.setItem('shop_v109_stable', JSON.stringify([]));
+    localStorage.setItem('shop_v110', JSON.stringify([]));
     toggleShoppingList();
 }
 
@@ -169,5 +160,5 @@ function openModal(id = null) {
 
 function closeModal() { document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden')); }
 
-window.onload = () => { renderGrid(); updateInstallButtonUI(); };
+window.onload = () => { renderGrid(); updateInstallBtn(); };
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
