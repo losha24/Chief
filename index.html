@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>מתכוני ה-Chef v2.0</title>
+    <title>מתכוני ה-Chef v2.1</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="stylesheet" href="styles.css">
@@ -16,12 +16,14 @@
                     <img src="logo.png" alt="Logo" class="header-logo">
                     <h1 class="main-title">מתכוני ה-<span>Chef</span></h1>
                 </div>
-                <button onclick="toggleShoppingList()" class="btn-cart-only">🛒</button>
             </div>
             
             <div class="action-grid">
                 <button id="installBtn" class="action-item" onclick="installPWA()">
                     <span class="icon">📲</span><span class="text">התקנה</span>
+                </button>
+                <button onclick="toggleShoppingList()" class="action-item">
+                    <span class="icon">🛒</span><span class="text">קניות</span>
                 </button>
                 <button onclick="updateApp()" class="action-item">
                     <span class="icon">🔄</span><span class="text">רענון</span>
@@ -55,7 +57,7 @@
 
         <div id="editModal" class="modal hidden">
             <div class="modal-content">
-                <h3>עריכת מתכון</h3>
+                <h3 id="modalTitle">מתכון חדש</h3>
                 <input type="hidden" id="editId">
                 <input type="text" id="editTitle" placeholder="שם המתכון">
                 <select id="editCat">
@@ -66,33 +68,31 @@
                     <option value="סלטים">סלטים</option>
                     <option value="פסטות">פסטות</option>
                 </select>
-                <textarea id="editIng" placeholder="מצרכים (כל אחד בשורה חדשה)"></textarea>
+                <textarea id="editIng" placeholder="מצרכים (שורה לכל מצרך)"></textarea>
                 <textarea id="editSteps" placeholder="הוראות הכנה"></textarea>
-                <div class="modal-footer-btns">
-                    <button onclick="saveRecipe()" class="btn-primary">שמור</button>
-                    <button onclick="closeModal()" class="btn-secondary">סגור</button>
-                </div>
+                <button onclick="saveRecipe()" class="btn-primary">שמור</button>
+                <button onclick="closeModal()" class="btn-secondary">ביטול</button>
             </div>
         </div>
 
         <div id="recipeView" class="modal hidden">
             <div class="modal-content view-mode">
                 <div id="viewAreaContent"></div>
-                <button onclick="closeModal()" class="btn-secondary">חזרה לתפריט</button>
+                <button onclick="closeModal()" class="btn-secondary">סגור</button>
             </div>
         </div>
 
         <div id="shoppingModal" class="modal hidden">
             <div class="modal-content">
                 <h3>🛒 רשימת קניות</h3>
-                <ul id="shoppingItems"></ul>
-                <button onclick="clearShoppingList()" class="btn-danger">נקה רשימה</button>
+                <ul id="shoppingItems" class="shop-list-ul"></ul>
+                <button onclick="clearShoppingList()" class="btn-danger">נקה הכל</button>
                 <button onclick="closeModal()" class="btn-secondary">סגור</button>
             </div>
         </div>
 
         <footer class="app-footer">
-            <p>© 2026 אלכסיי זבודיסקר | גרסה 2.0.0</p>
+            <p>© 2026 אלכסיי זבודיסקר | גרסה 2.1.0</p>
         </footer>
     </div>
     <script src="app.js"></script>
