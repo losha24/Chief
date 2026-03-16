@@ -1,7 +1,8 @@
-const CACHE_NAME = 'chef-pro-v2.0.0';
+const CACHE_NAME = 'chef-pro-v2.1.0';
 const assets = ['./', './index.html', './styles.css', './app.js', './manifest.json', './logo.png'];
 
 self.addEventListener('install', e => {
+  self.skipWaiting();
   e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(assets)));
 });
 
