@@ -1,43 +1,42 @@
-const DB_NAME = 'chef_v2_data';
-const SHOP_NAME = 'chef_v2_shop';
+const DB_NAME = 'chef_v21_data';
+const SHOP_NAME = 'chef_v21_shop';
 
 const initialRecipes = [
-    { id: "1", title: "שניצל קלאסי", category: "בשרי", ingredients: ["חזה עוף", "פירורי לחם", "ביצה"], instructions: ["מטגנים עד להזהבה"] }
+    { id: "1", title: "שניצל קלאסי", category: "בשרי", ingredients: ["חזה עוף פרוס", "פירורי לחם", "ביצה"], instructions: ["טובלים בביצה", "מצפים בפירורי לחם", "מטגנים"] },
+    { id: "2", title: "צלי בקר חגיגי", category: "בשרי", ingredients: ["נתח בקר", "בצל", "יין אדום"], instructions: ["סוגרים את הבשר", "מבשלים עם יין ובצל 3 שעות"] },
+    { id: "3", title: "לזניה גבינות", category: "חלבי", ingredients: ["דפי לזניה", "גבינה צהובה", "קוטג'", "רוטב עגבניות"], instructions: ["מסדרים שכבות", "אופים 40 דקות"] },
+    { id: "4", title: "שקשוקה בולגרית", category: "חלבי", ingredients: ["עגבניות", "שום", "ביצים", "גבינה בולגרית"], instructions: ["מבשלים רוטב", "מוסיפים ביצים ובולגרית"] },
+    { id: "5", title: "לחם שום ביתי", category: "מאפים", ingredients: ["בצק שמרים", "שום", "שמן זית", "פטרוזיליה"], instructions: ["מורחים על הבצק", "אופים עד הזהבה"] },
+    { id: "6", title: "בורקס גבינה", category: "מאפים", ingredients: ["בצק עלים", "גבינה לבנה", "ביצה"], instructions: ["ממלאים את הבצק", "אופים 25 דקות"] },
+    { id: "7", title: "מוס שוקולד", category: "קינוחים", ingredients: ["שוקולד מריר", "שמנת מתוקה"], instructions: ["ממיסים שוקולד", "מקציפים שמנת ומערבבים"] },
+    { id: "8", title: "עוגיות שוקולד צ'יפס", category: "קינוחים", ingredients: ["קמח", "חמאה", "שוקולד צ'יפס"], instructions: ["מערבבים", "אופים 12 דקות"] },
+    { id: "9", title: "סלט יווני", category: "סלטים", ingredients: ["מלפפון", "עגבניה", "בצל סגול", "זיתים", "בולגרית"], instructions: ["חותכים", "מתבלים בשמן זית ולימון"] },
+    { id: "10", title: "סלט כרוב וגזר", category: "סלטים", ingredients: ["כרוב לבן", "גזר", "מיונז"], instructions: ["קוצצים ומערבבים"] },
+    { id: "11", title: "פסטה רוזה", category: "פסטות", ingredients: ["פסטה", "שמנת לבישול", "רסק עגבניות"], instructions: ["מבשלים פסטה", "מכינים רוטב ומערבבים"] },
+    { id: "12", title: "פוקצ'ה איטלקית", category: "מאפים", ingredients: ["קמח", "שמרים", "שמן זית", "מלח גס"], instructions: ["מתפיחים את הבצק", "אופים עם שמן זית"] }
 ];
 
 let recipes = JSON.parse(localStorage.getItem(DB_NAME)) || initialRecipes;
 let shoppingList = JSON.parse(localStorage.getItem(SHOP_NAME)) || [];
 let deferredPrompt;
 
-// עדכון אפליקציה וגרסה
 function updateApp() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(registrations => {
-            for (let registration of registrations) {
-                registration.unregister();
-            }
-            location.reload(true);
+            for (let registration of registrations) registration.unregister();
+            window.location.reload(true);
         });
-    } else {
-        location.reload(true);
-    }
+    } else { window.location.reload(true); }
 }
 
-// ניהול התקנה
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    const btn = document.getElementById('installBtn');
-    if(btn) btn.classList.add('ready-to-install');
 });
 
 async function installPWA() {
-    if (!deferredPrompt) {
-        alert("האפליקציה כבר מותקנת או שאינה נתמכת כרגע.");
-        return;
-    }
+    if (!deferredPrompt) return alert("האפליקציה כבר מותקנת");
     deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
     deferredPrompt = null;
 }
 
@@ -45,14 +44,14 @@ function renderGrid(data = recipes) {
     const grid = document.getElementById('recipeGrid');
     grid.innerHTML = data.map(r => `
         <div class="recipe-card">
-            <div onclick="viewRecipe('${r.id}')" class="card-clickable">
+            <div onclick="viewRecipe('${r.id}')">
                 <div class="card-emoji">${getIcon(r.category)}</div>
                 <h4>${r.title}</h4>
                 <span class="cat-label">${r.category}</span>
             </div>
-            <div class="card-actions">
+            <div class="card-btns-row">
                 <button onclick="openModal('${r.id}')">✏️</button>
-                <button onclick="deleteRecipe('${r.id}')">🗑️</button>
+                <button onclick="deleteRecipe('${r.id}')" style="color:#e74c3c">🗑️</button>
             </div>
         </div>
     `).join('');
@@ -66,9 +65,9 @@ function getIcon(cat) {
 function saveRecipe() {
     const id = document.getElementById('editId').value;
     const title = document.getElementById('editTitle').value.trim();
-    if (!title) return alert("חובה להזין שם");
+    if (!title) return;
 
-    const recipe = {
+    const r = {
         id: id || Date.now().toString(),
         title: title,
         category: document.getElementById('editCat').value,
@@ -76,16 +75,11 @@ function saveRecipe() {
         instructions: document.getElementById('editSteps').value.split('\n').filter(l => l.trim())
     };
 
-    if (id) {
-        const index = recipes.findIndex(r => r.id === id);
-        recipes[index] = recipe;
-    } else {
-        recipes.push(recipe);
-    }
+    if (id) recipes[recipes.findIndex(x => x.id === id)] = r;
+    else recipes.push(r);
 
     localStorage.setItem(DB_NAME, JSON.stringify(recipes));
-    closeModal();
-    renderGrid();
+    closeModal(); renderGrid();
 }
 
 function viewRecipe(id) {
@@ -95,32 +89,31 @@ function viewRecipe(id) {
         <h2 style="color:#d35400">${getIcon(r.category)} ${r.title}</h2>
         <div class="view-section">
             <strong>📋 מצרכים:</strong>
-            <ul>${r.ingredients.map(i => `<li>${i} <button class="mini-cart-btn" onclick="addToShop('${i}')">🛒</button></li>`).join('')}</ul>
+            <ul class="view-list">${r.ingredients.map(i => `<li>${i} <button onclick="addToShop('${i}')" class="mini-add">🛒</button></li>`).join('')}</ul>
         </div>
         <div class="view-section">
-            <strong>👨‍🍳 אופן ההכנה:</strong>
+            <strong>👨‍🍳 הכנה:</strong>
             <p>${r.instructions.join('<br>')}</p>
         </div>
-        <button onclick="shareWA('${r.id}')" class="btn-wa">שתף ב-WhatsApp</button>
+        <button onclick="shareWA('${r.id}')" class="btn-wa">שתף ב-WhatsApp 💬</button>
     `;
     document.getElementById('recipeView').classList.remove('hidden');
 }
 
 function shareWA(id) {
     const r = recipes.find(x => x.id === id);
-    const text = `*מתכון: ${r.title}*%0A%0A*מצרכים:*%0A${r.ingredients.join('%0A')}`;
-    window.open(`https://wa.me/?text=${text}`, '_blank');
+    const msg = `*${getIcon(r.category)} מתכון: ${r.title}*%0A%0A*מצרכים:*%0A${r.ingredients.join('%0A')}%0A%0A*הוראות:*%0A${r.instructions.join('%0A')}`;
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
 }
 
 function filterRecipes() {
     const s = document.getElementById('searchInput').value.toLowerCase();
     const c = document.getElementById('categoryFilter').value;
-    const filtered = recipes.filter(r => r.title.toLowerCase().includes(s) && (c === 'הכל' || r.category === c));
-    renderGrid(filtered);
+    renderGrid(recipes.filter(r => r.title.toLowerCase().includes(s) && (c === 'הכל' || r.category === c)));
 }
 
 function deleteRecipe(id) {
-    if (confirm('למחוק את המתכון?')) {
+    if (confirm('למחוק?')) {
         recipes = recipes.filter(r => r.id !== id);
         localStorage.setItem(DB_NAME, JSON.stringify(recipes));
         renderGrid();
@@ -132,22 +125,18 @@ function exportData() {
     const blob = new Blob([data], {type: 'application/json'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `chef_backup_v2_${new Date().toLocaleDateString()}.json`;
+    a.download = `chef_backup_v21.json`;
     a.click();
 }
 
 function importData(e) {
     const reader = new FileReader();
     reader.onload = (ev) => {
-        try {
-            const data = JSON.parse(ev.target.result);
-            recipes = data.recipes || [];
-            shoppingList = data.shoppingList || [];
-            localStorage.setItem(DB_NAME, JSON.stringify(recipes));
-            localStorage.setItem(SHOP_NAME, JSON.stringify(shoppingList));
-            renderGrid();
-            alert("הנתונים שוחזרו בהצלחה!");
-        } catch(err) { alert("קובץ לא תקין"); }
+        const data = JSON.parse(ev.target.result);
+        recipes = data.recipes; shoppingList = data.shoppingList;
+        localStorage.setItem(DB_NAME, JSON.stringify(recipes));
+        localStorage.setItem(SHOP_NAME, JSON.stringify(shoppingList));
+        renderGrid(); alert("בוצע!");
     };
     reader.readAsText(e.target.files[0]);
 }
@@ -155,7 +144,7 @@ function importData(e) {
 function addToShop(item) {
     shoppingList.push(item);
     localStorage.setItem(SHOP_NAME, JSON.stringify(shoppingList));
-    alert('התווסף לרשימה!');
+    alert('התווסף!');
 }
 
 function toggleShoppingList() {
@@ -171,43 +160,28 @@ function removeShop(i) {
 }
 
 function clearShoppingList() {
-    if(confirm('לנקות את כל הרשימה?')) {
-        shoppingList = [];
-        localStorage.setItem(SHOP_NAME, JSON.stringify([]));
-        toggleShoppingList();
-    }
+    shoppingList = [];
+    localStorage.setItem(SHOP_NAME, JSON.stringify([]));
+    toggleShoppingList();
 }
 
 function openModal(id = null) {
-    const mid = document.getElementById('editId');
-    const title = document.getElementById('editTitle');
-    const cat = document.getElementById('editCat');
-    const ing = document.getElementById('editIng');
-    const steps = document.getElementById('editSteps');
-
     if (id) {
         const r = recipes.find(x => x.id === id);
-        mid.value = r.id;
-        title.value = r.title;
-        cat.value = r.category;
-        ing.value = r.ingredients.join('\n');
-        steps.value = r.instructions.join('\n');
+        document.getElementById('editId').value = r.id;
+        document.getElementById('editTitle').value = r.title;
+        document.getElementById('editCat').value = r.category;
+        document.getElementById('editIng').value = r.ingredients.join('\n');
+        document.getElementById('editSteps').value = r.instructions.join('\n');
     } else {
-        mid.value = "";
-        title.value = "";
-        ing.value = "";
-        steps.value = "";
+        document.getElementById('editId').value = "";
+        document.getElementById('editTitle').value = "";
+        document.getElementById('editIng').value = "";
+        document.getElementById('editSteps').value = "";
     }
     document.getElementById('editModal').classList.remove('hidden');
 }
 
-function closeModal() {
-    document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-}
+function closeModal() { document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden')); }
 
-window.onload = () => {
-    renderGrid();
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js');
-    }
-};
+window.onload = () => { renderGrid(); if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js'); };
